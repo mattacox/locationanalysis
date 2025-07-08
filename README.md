@@ -6,14 +6,42 @@ This project visualizes socioeconomic and housing indicators over time for censu
 
 Each map is animated with a time slider and covers the following indicators:
 
-- **Poverty Rate**
-- **Median Household Income**
-- **Unemployment Rate**
-- **SNAP Participation Share**
-- **Renter Share**
-- **Rent Burden (≥30%)**
-- **Senior Population Share**
-- **Displacement Risk Index** (composite of rent burden, poverty, SNAP, and more)
+- **Poverty Rate**  
+  The share of the population living below the federal poverty line.  
+  *Typical range:* 5–30%; *High risk:* above 20%.
+
+- **Median Household Income**  
+  The median annual income for households, indicating overall economic well-being.  
+  *Typical range:* $30,000–$70,000; *Low income:* below $40,000.
+
+- **Unemployment Rate**  
+  The proportion of the labor force currently unemployed and seeking work.  
+  *Typical range:* 3–12%; *High risk:* above 10%.
+
+- **SNAP Participation Share**  
+  The share of households receiving Supplemental Nutrition Assistance Program benefits, reflecting economic hardship.  
+  *Typical range:* 5–30%; *High risk:* above 20%.
+
+- **Renter Share**  
+  The proportion of occupied housing units that are renter-occupied, indicating housing tenure patterns.  
+  *Typical range:* 20–60%; varies widely by neighborhood.
+
+- **Rent Burden (≥30%)**  
+  Percentage of renters spending 30% or more of household income on rent, signaling housing affordability stress.  
+  *Typical range:* 25–50%; *High risk:* above 30%.
+
+- **Senior Population Share**  
+  The share of residents aged 65 and older, indicating age demographics and potential service needs.  
+  *Typical range:* 10–25%; *Senior-heavy:* above 20%.
+
+- **Vacancy Rate**  
+  The share of housing units that are vacant, which can reflect housing market conditions or disinvestment.  
+  *Typical range:* 5–15%; *High vacancy:* above 10%.
+
+- **Displacement Risk Index**  
+  A composite indicator combining rent burden, poverty, SNAP participation, unemployment, vacancy, and senior share to identify neighborhoods at higher risk of displacement pressures.  
+  *Typical range:* 0 (low risk) to 1 (high risk); *High risk:* above 0.6.
+
 
 ## 🗺️ Interactive Map Viewer
 
