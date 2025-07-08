@@ -1,0 +1,35 @@
+# Ignore all files in data folder except README.md
+/data/*
+!/data/README.md
+
+# Alternatively, explicitly ignore common large data file types in data/
+# (Uncomment if you want to keep some other files)
+/data/*.csv
+/data/*.xlsx
+/data/*.shp
+/data/*.dbf
+/data/*.prj
+/data/*.shx
+/data/*.sbn
+/data/*.sbx
+/data/*.cpg
+/data/*.xml
+/data/*.gz
+
+# Ignore Python cache and bytecode
+__pycache__/
+*.pyc
+
+# Ignore virtual environment folders (add your venv folder names here if any)
+venv/
+env/
+
+# Ignore VS Code workspace settings
+.vscode/
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore Jupyter Notebook checkpoints (if any)
+.ipynb_checkpoints/
