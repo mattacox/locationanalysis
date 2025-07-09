@@ -32,7 +32,7 @@ years = [
 all_years = []
 
 # Load USDA data
-usda = pd.read_csv("data/Food Access Research Atlas.csv", dtype={"CensusTract": str})
+usda = pd.read_csv("data/FoodAccessResearchAtlas.csv", dtype={"CensusTract": str})
 
 # Load block group geometries
 bg = gpd.read_file("data/tl_2024_37_bg.shp")
@@ -62,6 +62,8 @@ bg_vars = [
     "B15003_001E",  # Educational attainment total
     "B15003_017E",  # High school graduate
     "B15003_022E",  # Bachelor's degree
+    "B25064_001E",  # Median gross rent
+
     "B25070_003E", # = households paying 0-14.9%
 
     "B25070_004E", # = households paying 15-19.9%
@@ -111,10 +113,6 @@ for vintage in years:
     data["year"] = vintage  # <-- Add this inside the for-loop
     data["timestamp"] = pd.to_datetime(data["year"].astype(str) + "-01-01")
 
-    print("\n=== ACS Data Sample ===")
-    print(data.head())
-    print("\nNumber of block groups:", len(data))
-
 
     senior_vars = [
         "B01001_020E", "B01001_021E", "B01001_022E", "B01001_023E", "B01001_024E", "B01001_025E",
@@ -137,6 +135,9 @@ for vintage in years:
 
     # Or, for cost-burdened (30% or more)
     cost_burdened = data["B25070_007E"] + data["B25070_008E"] + data["B25070_009E"] + data["B25070_010E"]
+    # Median rent value and formatted label
+    data["median_rent"] = data["B25064_001E"]
+    data["median_rent_str"] = data["median_rent"].fillna(0).apply(lambda x: "${:,.0f}".format(x))
 
     percent_cost_burdened = cost_burdened / data["B25070_001E"]
     data["percent_less_than_30"] = percent_less_than_30
@@ -183,71 +184,122 @@ for vintage in years:
     # Flag top need
     data["high_econ_dev_need"] = data["econ_dev_need_score"] >= 5  # Adjust threshold as needed
 
-    scaler = MinMaxScaler()
+    # scaler = MinMaxScaler()
 
-    # Define the fields to use
-    risk_fields = [
-        "rent_share",
-        "percent_cost_burdened",
-        "poverty_rate",
-        "snap_share",
-        "unemployment_rate",
-        # "no_car_share",
-        "senior_share",
-        # invert vacancy so that low vacancy = higher risk
-        "vacancy_rate"
-    ]
+    # # Define the fields to use
+    # risk_fields = [
+    #     "rent_share",
+    #     "percent_cost_burdened",
+    #     "poverty_rate",
+    #     "snap_share",
+    #     "unemployment_rate",
+    #     # "no_car_share",
+    #     "senior_share",
+    #     # invert vacancy so that low vacancy = higher risk
+    #     "vacancy_rate"
+    # ]
+    
+    # # Create a copy with inverted vacancy
+    # data["inv_vacancy"] = 1 - data["vacancy_rate"]
 
-    # Create a copy with inverted vacancy
-    data["inv_vacancy"] = 1 - data["vacancy_rate"]
-
-    # Replace the original in list
-    risk_fields = [f if f != "vacancy_rate" else "inv_vacancy" for f in risk_fields]
-
-
-    # Drop rows with missing values for these fields
-    risk_data = data[risk_fields].dropna()
+    # # Replace the original in list
+    # risk_fields = [f if f != "vacancy_rate" else "inv_vacancy" for f in risk_fields]
 
 
-    # Normalize
-    normalized = pd.DataFrame(scaler.fit_transform(risk_data), columns=risk_fields, index=risk_data.index)
+    # # Drop rows with missing values for these fields
+    # risk_data = data[risk_fields].dropna()
 
-    # Optional: Add weights (equal weights by default)
-    weights = {field: 1 for field in risk_fields}
 
-    # Weighted sum to create index
-    data.loc[normalized.index, "displacement_risk"] = sum(
-        normalized[field] * weight for field, weight in weights.items()
-    )
+    # # Normalize
+    # normalized = pd.DataFrame(scaler.fit_transform(risk_data), columns=risk_fields, index=risk_data.index)
+
+    # # Optional: Add weights (equal weights by default)
+    # # Weighted version: assign 2× weight to rent burden
+    # weights = {
+    #     "rent_share": 1,
+    #     "percent_cost_burdened": 2,
+    #     "poverty_rate": 1,
+    #     "snap_share": 1,
+    #     "unemployment_rate": 1,
+    #     "senior_share": 1,
+    #     "inv_vacancy": 1,
+    # }
+    # total_weight = sum(weights.values())
+    # data.loc[normalized.index, "displacement_risk"] = (
+    #     sum(normalized[field] * weight for field, weight in weights.items()) / total_weight
+    # )
 
 
     all_years.append(data)
 
+# --- Clean and sort ---
 long_data_geo = pd.concat(all_years, ignore_index=True)
+long_data_geo = long_data_geo.sort_values(["GEOID", "year"])
 
+# --- Create Demographic Displacement Proxies ---
+long_data_geo["black_share_change"] = long_data_geo.groupby("GEOID")["black_share"].diff()
+long_data_geo["latino_share_change"] = long_data_geo.groupby("GEOID")["latino_share"].diff()
 
-print("\n=== USDA Merge Check ===")
-print("Food desert True:", data["food_desert_flag"].sum())
-print("Food desert False:", (~data["food_desert_flag"]).sum())
+long_data_geo["black_decline"] = (long_data_geo["black_share_change"] < -0.02).astype(int)
+long_data_geo["latino_decline"] = (long_data_geo["latino_share_change"] < -0.02).astype(int)
 
-print("\n=== Poverty and Unemployment Summary ===")
-print(data[["poverty_rate", "unemployment_rate", "hs_or_more"]].describe())
+# --- Track Median Rent Change ---
+long_data_geo["median_rent_pct_change"] = long_data_geo.groupby("GEOID")["median_rent"].pct_change()
+long_data_geo["rapid_rent_increase"] = (long_data_geo["median_rent_pct_change"] > 0.10).astype(int)
 
-print("\n=== Rent Burden Summary ===")
-print("Cost burdened (% ≥30):", data["percent_cost_burdened"].describe())
-print("Affordable (% <30):", data["percent_less_than_30"].describe())
+# --- Normalize Core Displacement Risk Inputs ---
+# Replace vacancy_rate with its inverse (low vacancy = higher risk)
+long_data_geo["inv_vacancy"] = 1 - long_data_geo["vacancy_rate"]
 
-print("\n=== Race/Ethnicity Composition Summary ===")
-print("Black Share:\n", data["black_share"].describe())
-print("Latino Share:\n", data["latino_share"].describe())
-print("White Share:\n", data["white_share"].describe())
+# Define indicators to scale
+risk_fields = [
+    "rent_share",
+    "percent_cost_burdened",
+    "poverty_rate",
+    "snap_share",
+    "unemployment_rate",
+    "senior_share",
+    "inv_vacancy",
+]
 
-print("\n=== SNAP and Transportation Access ===")
-print("SNAP Share:\n", data["snap_share"].describe())
-print("No Car Share:\n", data["no_car_share"].describe())
+# Normalize with MinMaxScaler
+scaler = MinMaxScaler()
+normalized = pd.DataFrame(
+    scaler.fit_transform(long_data_geo[risk_fields].fillna(0)),
+    columns=risk_fields,
+    index=long_data_geo.index
+)
 
+# --- Apply Custom Weights ---
+weights = {
+    "rent_share": 1,
+    "percent_cost_burdened": 2,
+    "poverty_rate": 1,
+    "snap_share": 1,
+    "unemployment_rate": 1,
+    "senior_share": 1,
+    "inv_vacancy": 1,
+}
+total_weight = sum(weights.values())
 
+# Compute weighted composite index
+long_data_geo["base_displacement_index"] = (
+    sum(normalized[field] * weights[field] for field in risk_fields) / total_weight
+)
 
+# --- Final Displacement Risk Score ---
+# Include binary flags: demographic decline + rent increase
+long_data_geo["displacement_risk"] = (
+    long_data_geo["base_displacement_index"]
+    + long_data_geo["black_decline"] * 0.5
+    + long_data_geo["latino_decline"] * 0.5
+    + long_data_geo["rapid_rent_increase"] * 0.5
+)
+
+# Normalize to 0–1 scale again
+long_data_geo["displacement_risk"] = MinMaxScaler().fit_transform(
+    long_data_geo[["displacement_risk"]]
+)
 
 
 
@@ -274,7 +326,13 @@ indicators = [
     "rent_share",
     "senior_share",
     "displacement_risk",
+    "vacancy_rate",
     "median_income",
+    "median_rent", 
+    "black_share",
+    "white_share",
+    "latino_share",
+
 ]
 
 # Define optional fixed color range per indicator (None = use MinMaxScaler)
@@ -285,7 +343,12 @@ indicator_ranges = {
     "snap_share": (0, 0.5),
     "rent_share": (0, 0.8),
     "senior_share": (0, 0.5),
+    "vacancy_rate": (0, 0.4),  # <-- Add this line
+    
+
     "displacement_risk": (0, 1.0),  # Already scaled
+    "median_rent": (300, 1500),  # Adjust range based on your data
+
 }
 
 for indicator in indicators:
@@ -303,15 +366,102 @@ for indicator in indicators:
         scaler = MinMaxScaler()
         long_data_geo["scaled"] = scaler.fit_transform(long_data_geo[[indicator]])
 
+
+    # Compute year-over-year change and percent change from start year
+    long_data_geo[f"{indicator}_yoy_change"] = long_data_geo.groupby("GEOID")[indicator].diff()
+    long_data_geo[f"{indicator}_pct_change_from_start"] = (
+        long_data_geo[indicator] / long_data_geo.groupby("GEOID")[indicator].transform("first") - 1
+    )
+
     # Create color map
-    colormap = cm.linear.YlOrRd_09.scale(0, 1)
-    colormap.caption = f"{indicator.replace('_', ' ').title()} (scaled)"
+    if indicator_ranges.get(indicator):
+        vmin, vmax = indicator_ranges[indicator]
+    else:
+        vmin = long_data_geo[indicator].min()
+        vmax = long_data_geo[indicator].max()
+
+    colormap = cm.linear.Blues_09.scale(vmin, vmax)
+    if indicator == "median_income":
+        colormap.caption = "Median Income ($)"
+    elif indicator.endswith("_rate") or "share" in indicator or "percent" in indicator:
+        colormap.caption = indicator.replace("_", " ").title() + " (%)"
+    elif indicator == "displacement_risk":
+        colormap.caption = "Displacement Risk (%)"
+    elif indicator == "median_rent":
+        colormap.caption = "Median Rent ($)"
+    elif indicator in ["black_share", "white_share", "latino_share"]:
+        colormap.caption = indicator.replace("_", " ").title() + " (%)"
+
+
+    else:
+        colormap.caption = indicator.replace("_", " ").title()
+
+
 
     # Create GeoJSON features
     features = []
     for _, row in long_data_geo.iterrows():
         color = colormap(row["scaled"])
-        popup_val = round(row[indicator] * 100, 1) if row[indicator] < 1.0 else round(row[indicator], 1)
+        # Format values nicely for popup
+        val = row[indicator]
+        if indicator in ["poverty_rate", "percent_cost_burdened", "unemployment_rate", "snap_share", "rent_share", "senior_share","vacancy_rate", ]:
+            popup_val = f"{val * 100:.1f}%"
+        elif indicator == "median_income":
+            popup_val = f"${val:,.0f}"  
+        elif indicator == "displacement_risk":
+            popup_val = f"{val * 100:.1f}%"
+        elif indicator == "median_income" or indicator == "median_rent":
+            popup_val = f"${val:,.0f}"
+        elif indicator in ["black_share", "white_share", "latino_share"]:
+            popup_val = f"{val * 100:.1f}%"
+
+        else:
+            popup_val = f"{val}"
+            # Format YoY and total change
+        yoy = row.get(f"{indicator}_yoy_change", None)
+        pct_total = row.get(f"{indicator}_pct_change_from_start", None)
+
+        if pd.notnull(yoy):
+            if "rate" in indicator or "share" in indicator or "percent" in indicator or indicator == "displacement_risk":
+                yoy_str = f"{yoy * 100:+.1f}%"
+            elif "median" in indicator:
+                yoy_str = f"{yoy:+,.0f}"
+            else:
+                yoy_str = f"{yoy:+.2f}"
+        else:
+            yoy_str = "N/A"
+
+        if pd.notnull(pct_total):
+            if "rate" in indicator or "share" in indicator or "percent" in indicator or indicator == "displacement_risk":
+                pct_total_str = f"{pct_total * 100:.1f}%"
+            elif "median" in indicator:
+                pct_total_str = f"{pct_total * 100:.1f}%"
+            else:
+                pct_total_str = f"{pct_total:.2f}"
+        else:
+            pct_total_str = "N/A"
+
+
+        popup_html = f"""
+                <div style='max-width: 250px; font-size: 13px'>
+                <strong>Year:</strong> {row['year']}<br>
+                <strong>GEOID:</strong> {row['GEOID']}<br>
+                <strong>{indicator.replace('_', ' ').title()}:</strong> {popup_val}<br>
+                <strong>Year-over-Year Change:</strong> {yoy_str}<br>
+                <strong>% Change from 2017:</strong> {pct_total_str}<br>
+                 <strong>Median Income:</strong> ${row['median_income']:,.0f}<br>
+                <strong>Median Rent:</strong> ${row['median_rent']:,.0f}<br>
+                <strong>Renter Share:</strong> {row['rent_share']*100:.1f}%<br>
+                <strong>Rent Burden (30%+):</strong> {row['percent_cost_burdened']*100:.1f}%<br>
+                <strong>Poverty Rate:</strong> {row['poverty_rate']*100:.1f}%<br>
+                <strong>SNAP Share:</strong> {row['snap_share']*100:.1f}%<br><br>
+                <strong>Race / Ethnicity:</strong><br>
+                &nbsp;&nbsp;Black: {row['black_share']*100:.1f}%<br>
+                &nbsp;&nbsp;Latino: {row['latino_share']*100:.1f}%<br>
+                &nbsp;&nbsp;White: {row['white_share']*100:.1f}%<br>
+                </div>
+                """
+
         feature = {
             "type": "Feature",
             "geometry": row["geometry"].__geo_interface__,
@@ -319,11 +469,11 @@ for indicator in indicators:
                 "time": row["timestamp"].strftime("%Y-%m-%d"),
                 "style": {
                     "color": "black",
-                    "weight": 0.2,
+                    "weight": 0.7,
                     "fillColor": color,
-                    "fillOpacity": 1,
+                    "fillOpacity": .25,
                 },
-                "popup": f"Year: {row['year']}<br>GEOID: {row['GEOID']}<br>{indicator}: {popup_val}",
+                "popup": popup_html,
             },
         }
         features.append(feature)
@@ -334,7 +484,10 @@ for indicator in indicators:
     }
 
     # Create map
-    m = folium.Map(location=[36.3, -78.6], zoom_start=9, tiles="cartodbpositron")
+    m = folium.Map(location=[36.3, -78.6], zoom_start=14, tiles='OpenStreetMap'   # Explicitly sets OSM base layer
+)
+
+
 
     TimestampedGeoJson(
         geojson,
@@ -363,3 +516,66 @@ for indicator in indicators:
     output_path = f"html/{indicator}_timeslider.html"
     m.save(output_path)
     print(f"✅ Saved: {output_path}")
+
+latest = long_data_geo[long_data_geo["year"] == 2023].copy()
+
+
+m = folium.Map(location=[36.3, -78.6], zoom_start=14, tiles="OpenStreetMap")
+
+for _, row in latest.iterrows():
+    popup_html = f"""
+<div style='max-width: 280px; font-size: 13px'>
+    <strong>Year:</strong> {row['year']}<br>
+    <strong>GEOID:</strong> {row['GEOID']}<br><hr style="margin: 4px 0">
+    <strong>Median Income:</strong> ${row['median_income']:,.0f}<br>
+    <strong>Median Rent:</strong> ${row['median_rent']:,.0f}<br>
+    <strong>Rent Burden (30%+):</strong> {row['percent_cost_burdened']*100:.1f}%<br>
+    <strong>Poverty Rate:</strong> {row['poverty_rate']*100:.1f}%<br>
+    <strong>SNAP Share:</strong> {row['snap_share']*100:.1f}%<br><br>
+    <strong>Race / Ethnicity:</strong><br>
+    &nbsp;&nbsp;Black: {row['black_share']*100:.1f}%<br>
+    &nbsp;&nbsp;Latino: {row['latino_share']*100:.1f}%<br>
+    &nbsp;&nbsp;White: {row['white_share']*100:.1f}%<br>
+</div>
+"""
+    folium.GeoJson(
+        row["geometry"],
+        style_function=lambda x: {
+            "color": "black",
+            "weight": 0.3,
+            "fillColor": "#2171b5",  # You can scale color based on one variable if you want
+            "fillOpacity": 0.4,
+        },
+        tooltip=folium.Tooltip(popup_html),
+    ).add_to(m)
+
+m.save(f"html/2023_income_burden_race_2023.html")
+
+latest = long_data_geo[long_data_geo["year"] == 2017].copy()
+
+
+m = folium.Map(location=[36.3, -78.6], zoom_start=14, tiles="OpenStreetMap")
+
+for _, row in latest.iterrows():
+    popup_html = f"""
+    <div style='max-width: 250px; font-size: 13px'>
+        <strong>GEOID:</strong> {row['GEOID']}<br>
+        <strong>Median Income:</strong> ${row['median_income']:,.0f}<br>
+        <strong>% Cost Burdened:</strong> {row['percent_cost_burdened'] * 100:.1f}%<br>
+        <strong>Black Share:</strong> {row['black_share'] * 100:.1f}%<br>
+        <strong>Latino Share:</strong> {row['latino_share'] * 100:.1f}%<br>
+        <strong>White Share:</strong> {row['white_share'] * 100:.1f}%
+    </div>
+    """
+    folium.GeoJson(
+        row["geometry"],
+        style_function=lambda x: {
+            "color": "black",
+            "weight": 0.3,
+            "fillColor": "#2171b5",  # You can scale color based on one variable if you want
+            "fillOpacity": 0.4,
+        },
+        tooltip=folium.Tooltip(popup_html),
+    ).add_to(m)
+
+m.save(f"html/2017_income_burden_race_2023.html")
