@@ -491,14 +491,11 @@ def run_brand_analysis(
         tracts["share_low_wage"] = merged_df["share_low_wage"]
         tracts["pct_commercial"] = merged_df["pct_commercial"]
 
-
-
         m = folium.Map(location=[36.1, -78.7], zoom_start=9, tiles="cartodbpositron")
 
         colormap = cm.linear.OrRd_09.scale(tracts["predicted_prob"].min(), tracts["predicted_prob"].max())
         colormap.caption = f"Predicted Probability of a '{brand}'"
         colormap.add_to(m)
-
 
         tracts_clean = tracts.dropna(subset=["predicted_prob"])
         predicted_tracts_focus = tracts_clean[tracts_clean["COUNTYFP"].isin(focus_counties)]
@@ -520,9 +517,6 @@ def run_brand_analysis(
                 predicted_tracts_focus[display_col] = (
                             pd.to_numeric(predicted_tracts_focus[col], errors="coerce") * 100
                         ).round(1).astype(str) + "%"
-
-
-
 
         prob_layer = folium.FeatureGroup(name="Tract Data", show=True)
 
@@ -572,7 +566,6 @@ def run_brand_analysis(
         prob_layer.add_to(m)
 
                 # Add Oxford city boundary
-
 
         # 🆕 Filter store points to only those within the focused counties
         stores_focus = stores_gdf[stores_gdf["name"] == brand]
@@ -642,7 +635,6 @@ def run_brand_analysis(
             highlight_html += f"<li><h5>Optimal Population Density to predict {brand}</h5> {pop_density:,.2f} people/sq Km</li>"
 
         highlight_html += "</ul>"
-
 
         m.get_root().add_child(FixedHTMLLegend(highlight_html + legend_html))
         folium.LayerControl().add_to(m)
