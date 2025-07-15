@@ -128,7 +128,7 @@ This script estimates the likelihood of a specific retail brand locating in Oxfo
 Run from the command line:
 
 ```bash
-python brandteststable.py --brand "Dollar General"
+python brandteststable.py --brand "Dollar General" ```
 
 
 📬 Contact
