@@ -112,6 +112,24 @@ scripts/
 
 5. Open index.html in a browser to explore the maps.
 
+## 🛒 Brand Placement Suitability Model
+
+This script estimates the likelihood of a specific retail brand locating in Oxford, NC or surrounding areas, based on logistic regression analysis of income, population density, land use, and labor market indicators at the census tract level.
+
+### Features:
+
+- Predictive map showing probability of brand presence by tract
+- Optimization to identify optimal conditions for attracting a brand
+- Synthetic tract representing Oxford’s ETJ is included in model
+- Outputs top 10 tracts for brand expansion (excluding existing locations)
+
+### Example Usage
+
+Run from the command line:
+
+```bash
+python brandteststable.py --brand "Dollar General"
+
 
 📬 Contact
 Maintained by Matthew Cox
