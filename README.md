@@ -42,18 +42,18 @@ Each map is animated with a time slider and covers the following indicators:
   A composite indicator combining rent burden, poverty, SNAP participation, unemployment, vacancy, and senior share to identify neighborhoods at higher risk of displacement pressures.  
   *Typical range:* 0 (low risk) to 1 (high risk); *High risk:* above 0.6.
 
-  ℹ️ About Normalization:
+  ℹ️ *About Normalization:*  
   The displacement risk index is normalized using all block groups in Granville County to create a consistent reference frame. This approach allows block groups in Oxford to be evaluated in context, highlighting which areas stand out not just locally, but county-wide.
 
   An Oxford-only normalization would compress the score range and make internal differences appear larger, but it would limit comparability and may understate broader risk patterns. Oxford’s 12 block groups are small in number but internally diverse—normalizing at the county level supports clearer regional policy targeting without distorting intra-city variation.
 
-- **Media Gross Rent**  
+- **Median Gross Rent**  
   Median monthly rent paid by renters, in dollars.
 
-- **Food Desert Status**
-  Whether the census tract qualifies as a low-income, low-access (LILA) food desert based on USDA definitions.
-  Criteria: Low-income census tracts with a significant share of the population more than 1 mile (urban) or 10 miles (rural) from the nearest supermarket.
-  Why it matters: Food access intersects with affordability, transportation, and health, and can compound displacement risk.
+- **Food Desert Status**  
+  Whether the census tract qualifies as a **low-income, low-access (LILA)** food desert, as defined by the USDA Food Access Research Atlas.  
+  *Criteria:* Low-income census tracts where a significant portion of residents live more than 1 mile (urban) or 10 miles (rural) from the nearest supermarket.  
+  *Why it matters:* Lack of access to healthy, affordable food intersects with affordability, transportation, and health — and can compound displacement pressure in vulnerable communities.
 
 
 ## 🗺️ Interactive Map Viewer
