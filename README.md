@@ -50,6 +50,11 @@ Each map is animated with a time slider and covers the following indicators:
 - **Media Gross Rent**  
   Median monthly rent paid by renters, in dollars.
 
+- **Food Desert Status**
+  Whether the census tract qualifies as a low-income, low-access (LILA) food desert based on USDA definitions.
+  Criteria: Low-income census tracts with a significant share of the population more than 1 mile (urban) or 10 miles (rural) from the nearest supermarket.
+  Why it matters: Food access intersects with affordability, transportation, and health, and can compound displacement risk.
+
 
 ## 🗺️ Interactive Map Viewer
 
@@ -104,6 +109,7 @@ scripts/
    ```bash
    git clone https://github.com/mattacox/locationanalysis.git
    cd locationanalysis
+   ```
 2. Set up your Python environment and install dependencies.
 
 3. Place downloaded data in the data/ folder.
@@ -130,6 +136,9 @@ Run from the command line:
 ```bash
 python brandteststable.py --brand "Dollar General"
 ```
+
+
+
 
 
 📬 Contact
