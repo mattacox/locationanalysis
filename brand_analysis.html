@@ -48,6 +48,54 @@
       <li class="list-group-item">
         <a href="html/brands/Harris_Teeter_map.html">Harris Teeter Suitability Map</a>
         <p>Likelihood of Dollar General expansion based on current demographics, income, and retail proximity.</p>
+        <div class="container my-4">
+  <h2 class="mb-3">🛒 Harris Teeter Brand Suitability Summary</h2>
+  <p>
+    This section summarizes the logistic regression analysis used to estimate the suitability of census tracts in and around Oxford, NC for the placement of a <strong>Harris Teeter</strong> grocery store. The model uses demographic, economic, and land use features to assess probability of brand presence.
+  </p>
+
+  <h4 class="mt-4">📈 Key Predictors</h4>
+  <ul>
+    <li><strong>Log Median Income</strong>: Strongest positive predictor (Coefficient: 2.69)</li>
+    <li><strong>Log Population Density</strong>: Positive correlation with brand presence</li>
+    <li><strong>Road Access Score</strong>: Moderate positive relationship</li>
+    <li><strong>Share of Low-Wage Jobs</strong>: Small positive effect</li>
+    <li><strong>Owner-Occupancy Rate</strong>: Negative association (Coefficient: -0.45)</li>
+    <li><strong>Commercial Land Share</strong>: Minor positive effect</li>
+  </ul>
+
+  <p>
+    Several features such as median income (in raw scale), income squared, job density, and share of high-wage jobs had zero or negligible influence in the final model after L1 regularization.
+  </p>
+
+  <h4 class="mt-4">📊 Optimal Feature Values for 50% Brand Suitability</h4>
+  <table class="table table-bordered table-sm w-auto">
+    <thead class="table-light">
+      <tr>
+        <th>Feature</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Log Median Income</td><td>12.26</td></tr>
+      <tr><td>Population Density</td><td>485.28 people/sq mi</td></tr>
+      <tr><td>Log Population Density</td><td>6.62</td></tr>
+      <tr><td>Road Access Score</td><td>109,329.56</td></tr>
+      <tr><td>Owner-Occupancy Rate</td><td>61%</td></tr>
+      <tr><td>Share of Mid-Wage Jobs</td><td>33%</td></tr>
+      <tr><td>Share of Low-Wage Jobs</td><td>24%</td></tr>
+      <tr><td>Commercial Land Share</td><td>1%</td></tr>
+      <tr><td>Commercial Share (squared)</td><td>1%</td></tr>
+      <tr><td>Entropy (Land Mix)</td><td>0.06</td></tr>
+      <tr><td><strong>Implied Median Income</strong></td><td>$211,630</td></tr>
+    </tbody>
+  </table>
+
+  <p>
+    Tracts approaching these values are more likely to support a Harris Teeter store, according to the model. However, local context such as existing competition, brand strategy, and zoning policy should also be considered.
+  </p>
+</div>
+
       </li>
       <li class="list-group-item">
         <a href="html/brands/food_lion_timeslider.html">Food Lion Suitability Map</a>
