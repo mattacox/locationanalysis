@@ -47,7 +47,7 @@
     <ul class="list-group">
       <li class="list-group-item">
         <a href="html/brands/Harris_Teeter_map.html">Harris Teeter Suitability Map</a>
-        <p>Likelihood of Dollar General expansion based on current demographics, income, and retail proximity.</p>
+        <p>Likelihood of Harris Teeter expansion based on current demographics, income, and retail proximity.</p>
         <div class="container my-4">
   <h2 class="mb-3">🛒 Harris Teeter Brand Suitability Summary</h2>
   <p>
@@ -98,8 +98,54 @@
 
       </li>
       <li class="list-group-item">
-        <a href="html/brands/food_lion_timeslider.html">Food Lion Suitability Map</a>
-        <p>Estimates which tracts may support a Food Lion based on density, road network, and income mix.</p>
+        <a href="html/brands/Food_Lion_map.html">Food Lion Suitability Map</a>
+        <div class="container my-4">
+  <h2 class="mb-3">🛒 Food Lion Brand Suitability Summary</h2>
+  <p>
+    This section summarizes the logistic regression analysis used to estimate the suitability of census tracts in and around Oxford, NC for the placement of a <strong>Food Lion</strong> grocery store. The model evaluates demographic, accessibility, and land use variables to determine brand presence likelihood.
+  </p>
+
+  <h4 class="mt-4">📈 Key Predictors</h4>
+  <ul>
+    <li><strong>Log Population Density</strong>: Strongest positive predictor (Coefficient: 1.38)</li>
+    <li><strong>Road Access Score</strong>: Positive influence on brand presence</li>
+    <li><strong>Entropy (Land Mix)</strong>: Moderate positive relationship</li>
+    <li><strong>Population Density (Raw)</strong>: Mild negative effect</li>
+    <li><strong>Share of High-Wage Jobs</strong>: Negative association (Coefficient: -0.28)</li>
+    <li><strong>Log Median Income</strong>: Slight negative effect</li>
+  </ul>
+
+  <p>
+    Compared to Harris Teeter, Food Lion favors tracts with <strong>more diverse land use, stronger road access, and moderate densities</strong>. It shows a slight preference away from higher-income or heavily white-collar areas.
+  </p>
+
+  <h4 class="mt-4">📊 Optimal Feature Values for 50% Brand Suitability</h4>
+  <table class="table table-bordered table-sm w-auto">
+    <thead class="table-light">
+      <tr>
+        <th>Feature</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Log Median Income</td><td>10.79</td></tr>
+      <tr><td>Population Density</td><td>59.03 people/sq mi</td></tr>
+      <tr><td>Log Population Density</td><td>9.34</td></tr>
+      <tr><td>Road Access Score</td><td>258,966.46</td></tr>
+      <tr><td>Owner-Occupancy Rate</td><td>70%</td></tr>
+      <tr><td>Share of High-Wage Jobs</td><td>38%</td></tr>
+      <tr><td>Commercial Land Share</td><td>1%</td></tr>
+      <tr><td>Commercial Share (squared)</td><td>0%</td></tr>
+      <tr><td>Entropy (Land Mix)</td><td>0.20</td></tr>
+      <tr><td><strong>Implied Median Income</strong></td><td>$48,503</td></tr>
+    </tbody>
+  </table>
+
+  <p>
+    This profile suggests that <strong>Food Lion is well-suited for moderately dense, mixed-use areas</strong> with middle-income and working-class characteristics. Tracts with higher owner-occupancy and road accessibility are more attractive even without extreme income levels.
+  </p>
+</div>
+
       </li>
       <!-- Add more brands as needed -->
     </ul>
