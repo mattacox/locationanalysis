@@ -147,7 +147,51 @@
 </div>
 
       </li>
-      <!-- Add more brands as needed -->
+<div class="container my-4">
+  <h2 class="mb-3">🛒 ALDI Brand Suitability Summary</h2>
+  <p>
+    This section outlines the results of a logistic regression model estimating which census tracts in and around Oxford, NC are most likely to attract an <strong>ALDI</strong> grocery store. The model uses demographic, land use, and workforce indicators to predict brand suitability.
+  </p>
+
+  <h4 class="mt-4">📈 Key Predictors</h4>
+  <ul>
+    <li><strong>Log Population Density</strong>: Strongest positive predictor (Coefficient: 2.57)</li>
+    <li><strong>Road Access Score</strong>: Strong influence on suitability</li>
+    <li><strong>Population Density (Raw)</strong>: Inversely related to presence (Coefficient: -0.84)</li>
+    <li><strong>Share of Mid/Low-Wage Jobs</strong>: Positive association (working-class market preference)</li>
+    <li><strong>Land Mix (Entropy)</strong>: Slight positive effect</li>
+    <li><strong>Commercial Share</strong>: Mildly influential</li>
+  </ul>
+
+  <p>
+    Unlike higher-end chains, <strong>ALDI appears to target moderately dense, accessible areas with strong road infrastructure and a solid base of working-class residents</strong>. High income is not required, and low-wage prevalence may even boost suitability.
+  </p>
+
+  <h4 class="mt-4">📊 Optimal Feature Values for 50% Brand Suitability</h4>
+  <table class="table table-bordered table-sm w-auto">
+    <thead class="table-light">
+      <tr>
+        <th>Feature</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Population Density</td><td>137.41 people/sq mi</td></tr>
+      <tr><td>Log Population Density</td><td>8.10</td></tr>
+      <tr><td>Road Access Score</td><td>140,214.42</td></tr>
+      <tr><td>Job Density</td><td>1.18 jobs per capita</td></tr>
+      <tr><td>Share of Mid-Wage Jobs</td><td>34%</td></tr>
+      <tr><td>Share of Low-Wage Jobs</td><td>23%</td></tr>
+      <tr><td>Commercial Land Share</td><td>1%</td></tr>
+      <tr><td>Commercial Share (squared)</td><td>0%</td></tr>
+      <tr><td>Entropy (Land Mix)</td><td>0.07</td></tr>
+    </tbody>
+  </table>
+
+  <p>
+    This brand profile suggests <strong>ALDI is suited to mid-density areas with efficient road access and economically diverse residents</strong>. Local planners can use these insights to target locations where affordability, access, and land use make ALDI expansion viable.
+  </p>
+</div>
     </ul>
 
     <h5 class="mt-4">🧪 Why It Matters</h5>
