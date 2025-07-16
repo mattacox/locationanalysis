@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Retail & Brand Suitability – Oxford, NC</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    crossorigin="anonymous"
+  />
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="index.html">Oxford, NC Maps</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+        data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+        aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container">
+    <h1 class="mb-4">🛒 Retail & Brand Suitability Model</h1>
+
+    <p>This dashboard visualizes the estimated suitability of different census tracts in and around Oxford, NC for attracting specific retail brands or amenities. The model supports community questions around economic development, annexation, and equitable access to stores.</p>
+
+    <h5>📌 What This Model Does</h5>
+    <ul>
+      <li>Uses census and employment data to predict areas suitable for brand expansion</li>
+      <li>Highlights potential locations for grocery stores, chain retail, or restaurants</li>
+      <li>Supports discussion of whether population growth alone attracts amenities</li>
+    </ul>
+
+    <h5 class="mt-4">⚙️ How It Works</h5>
+    <ul>
+      <li>Logistic regression model using tract-level ACS + LODES + land use data</li>
+      <li>Trained on known brand locations along North Carolina's I-85 corridor, and generalized to Oxford-area tracts</li>
+      <li>Factors include, but aren't limited to income, density, workforce access, and renter share</li>
+    </ul>
+
+    <h5 class="mt-4">📍 Explore Brand Suitability Maps</h5>
+    <ul class="list-group">
+      <li class="list-group-item">
+        <a href="html/brands/Harris_Teeter_map.html">Harris Teeter Suitability Map</a>
+        <p>Likelihood of Dollar General expansion based on current demographics, income, and retail proximity.</p>
+      </li>
+      <li class="list-group-item">
+        <a href="html/brands/food_lion_timeslider.html">Food Lion Suitability Map</a>
+        <p>Estimates which tracts may support a Food Lion based on density, road network, and income mix.</p>
+      </li>
+      <!-- Add more brands as needed -->
+    </ul>
+
+    <h5 class="mt-4">🧪 Why It Matters</h5>
+    <p>
+      This tool complements the displacement risk dashboard by helping policymakers ask:
+    </p>
+    <ul>
+      <li>Will annexing rooftops attract stores?</li>
+      <li>Are high-need areas being overlooked by retailers?</li>
+      <li>How do growth patterns intersect with affordability concerns?</li>
+    </ul>
+
+    <p class="mt-4">
+      🔙 <a href="index.html">Return to Main Dashboard</a>
+    </p>
+  </div>
+
+  <!-- Bootstrap JS Bundle -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    crossorigin="anonymous"
+  ></script>
+</body>
+</html>
