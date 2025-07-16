@@ -40,7 +40,7 @@
     <ul>
       <li>Logistic regression model using tract-level ACS + LODES + land use data</li>
       <li>Trained on known brand locations along North Carolina's I-85 corridor, and generalized to Oxford-area tracts</li>
-      <li>Factors include, but aren't limited to income, density, workforce access, and renter share</li>
+      <li>Factors include income, density, workforce access, renter share, and land use</li>
     </ul>
 
     <h5 class="mt-4">📍 Explore Brand Suitability Maps</h5>
@@ -48,161 +48,117 @@
       <li class="list-group-item">
         <a href="html/brands/Harris_Teeter_map.html">Harris Teeter Suitability Map</a>
         <p>Likelihood of Harris Teeter expansion based on current demographics, income, and retail proximity.</p>
+
         <div class="container my-4">
-  <h2 class="mb-3">🛒 Harris Teeter Brand Suitability Summary</h2>
-  <p>
-    This section summarizes the logistic regression analysis used to estimate the suitability of census tracts in and around Oxford, NC for the placement of a <strong>Harris Teeter</strong> grocery store. The model uses demographic, economic, and land use features to assess probability of brand presence.
-  </p>
-
-  <h4 class="mt-4">📈 Key Predictors</h4>
-  <ul>
-    <li><strong>Log Median Income</strong>: Strongest positive predictor (Coefficient: 2.69)</li>
-    <li><strong>Log Population Density</strong>: Positive correlation with brand presence</li>
-    <li><strong>Road Access Score</strong>: Moderate positive relationship</li>
-    <li><strong>Share of Low-Wage Jobs</strong>: Small positive effect</li>
-    <li><strong>Owner-Occupancy Rate</strong>: Negative association (Coefficient: -0.45)</li>
-    <li><strong>Commercial Land Share</strong>: Minor positive effect</li>
-  </ul>
-
-  <p>
-    Several features such as median income (in raw scale), income squared, job density, and share of high-wage jobs had zero or negligible influence in the final model after L1 regularization.
-  </p>
-
-  <h4 class="mt-4">📊 Optimal Feature Values for 50% Brand Suitability</h4>
-  <table class="table table-bordered table-sm w-auto">
-    <thead class="table-light">
-      <tr>
-        <th>Feature</th>
-        <th>Value</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td>Log Median Income</td><td>12.26</td></tr>
-      <tr><td>Population Density</td><td>485.28 people/sq mi</td></tr>
-      <tr><td>Log Population Density</td><td>6.62</td></tr>
-      <tr><td>Road Access Score</td><td>109,329.56</td></tr>
-      <tr><td>Owner-Occupancy Rate</td><td>61%</td></tr>
-      <tr><td>Share of Mid-Wage Jobs</td><td>33%</td></tr>
-      <tr><td>Share of Low-Wage Jobs</td><td>24%</td></tr>
-      <tr><td>Commercial Land Share</td><td>1%</td></tr>
-      <tr><td>Commercial Share (squared)</td><td>1%</td></tr>
-      <tr><td>Entropy (Land Mix)</td><td>0.06</td></tr>
-      <tr><td><strong>Implied Median Income</strong></td><td>$211,630</td></tr>
-    </tbody>
-  </table>
-
-  <p>
-    Tracts approaching these values are more likely to support a Harris Teeter store, according to the model. However, local context such as existing competition, brand strategy, and zoning policy should also be considered.
-  </p>
-</div>
-
+          <h2 class="mb-3">🛒 Harris Teeter Brand Suitability Summary</h2>
+          <p>This section summarizes the logistic regression analysis used to estimate the suitability of census tracts in and around Oxford, NC for the placement of a <strong>Harris Teeter</strong> grocery store.</p>
+          <h4 class="mt-4">📈 Key Predictors</h4>
+          <ul>
+            <li><strong>Log Median Income</strong>: Strongest positive predictor (2.69)</li>
+            <li><strong>Log Population Density</strong>: Positive correlation</li>
+            <li><strong>Road Access Score</strong>: Moderate positive effect</li>
+            <li><strong>Share of Low-Wage Jobs</strong>: Small positive effect</li>
+            <li><strong>Owner-Occupancy Rate</strong>: Negative correlation</li>
+            <li><strong>Commercial Land Share</strong>: Minor positive effect</li>
+          </ul>
+          <h4 class="mt-4">📊 Optimal Feature Values</h4>
+          <table class="table table-bordered table-sm w-auto">
+            <thead class="table-light">
+              <tr><th>Feature</th><th>Value</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Log Median Income</td><td>12.26</td></tr>
+              <tr><td>Population Density</td><td>485.28</td></tr>
+              <tr><td>Log Population Density</td><td>6.62</td></tr>
+              <tr><td>Road Access Score</td><td>109,329.56</td></tr>
+              <tr><td>Owner-Occupancy</td><td>61%</td></tr>
+              <tr><td>Mid-Wage Jobs</td><td>33%</td></tr>
+              <tr><td>Low-Wage Jobs</td><td>24%</td></tr>
+              <tr><td>Commercial Share</td><td>1%</td></tr>
+              <tr><td>Commercial Share²</td><td>1%</td></tr>
+              <tr><td>Entropy</td><td>0.06</td></tr>
+              <tr><td><strong>Implied Median Income</strong></td><td>$211,630</td></tr>
+            </tbody>
+          </table>
+        </div>
       </li>
+
       <li class="list-group-item">
         <a href="html/brands/Food_Lion_map.html">Food Lion Suitability Map</a>
+        <p>Model predicting Food Lion presence based on access, density, and workforce composition.</p>
+
         <div class="container my-4">
-  <h2 class="mb-3">🛒 Food Lion Brand Suitability Summary</h2>
-  <p>
-    This section summarizes the logistic regression analysis used to estimate the suitability of census tracts in and around Oxford, NC for the placement of a <strong>Food Lion</strong> grocery store. The model evaluates demographic, accessibility, and land use variables to determine brand presence likelihood.
-  </p>
-
-  <h4 class="mt-4">📈 Key Predictors</h4>
-  <ul>
-    <li><strong>Log Population Density</strong>: Strongest positive predictor (Coefficient: 1.38)</li>
-    <li><strong>Road Access Score</strong>: Positive influence on brand presence</li>
-    <li><strong>Entropy (Land Mix)</strong>: Moderate positive relationship</li>
-    <li><strong>Population Density (Raw)</strong>: Mild negative effect</li>
-    <li><strong>Share of High-Wage Jobs</strong>: Negative association (Coefficient: -0.28)</li>
-    <li><strong>Log Median Income</strong>: Slight negative effect</li>
-  </ul>
-
-  <p>
-    Compared to Harris Teeter, Food Lion favors tracts with <strong>more diverse land use, stronger road access, and moderate densities</strong>. It shows a slight preference away from higher-income or heavily white-collar areas.
-  </p>
-
-  <h4 class="mt-4">📊 Optimal Feature Values for 50% Brand Suitability</h4>
-  <table class="table table-bordered table-sm w-auto">
-    <thead class="table-light">
-      <tr>
-        <th>Feature</th>
-        <th>Value</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td>Log Median Income</td><td>10.79</td></tr>
-      <tr><td>Population Density</td><td>59.03 people/sq mi</td></tr>
-      <tr><td>Log Population Density</td><td>9.34</td></tr>
-      <tr><td>Road Access Score</td><td>258,966.46</td></tr>
-      <tr><td>Owner-Occupancy Rate</td><td>70%</td></tr>
-      <tr><td>Share of High-Wage Jobs</td><td>38%</td></tr>
-      <tr><td>Commercial Land Share</td><td>1%</td></tr>
-      <tr><td>Commercial Share (squared)</td><td>0%</td></tr>
-      <tr><td>Entropy (Land Mix)</td><td>0.20</td></tr>
-      <tr><td><strong>Implied Median Income</strong></td><td>$48,503</td></tr>
-    </tbody>
-  </table>
-
-  <p>
-    This profile suggests that <strong>Food Lion is well-suited for moderately dense, mixed-use areas</strong> with middle-income and working-class characteristics. Tracts with higher owner-occupancy and road accessibility are more attractive even without extreme income levels.
-  </p>
-</div>
-
+          <h2 class="mb-3">🛒 Food Lion Brand Suitability Summary</h2>
+          <p>Logistic regression analysis identifying key indicators of Food Lion store placement potential around Oxford, NC.</p>
+          <h4 class="mt-4">📈 Key Predictors</h4>
+          <ul>
+            <li><strong>Log Population Density</strong>: Strongest positive predictor (1.38)</li>
+            <li><strong>Road Access Score</strong>: Strong positive relationship</li>
+            <li><strong>Entropy</strong>: Moderate land mix influence</li>
+            <li><strong>Raw Density</strong>: Slightly negative</li>
+            <li><strong>High-Wage Share</strong>: Negative association</li>
+            <li><strong>Log Median Income</strong>: Mild negative effect</li>
+          </ul>
+          <h4 class="mt-4">📊 Optimal Feature Values</h4>
+          <table class="table table-bordered table-sm w-auto">
+            <thead class="table-light">
+              <tr><th>Feature</th><th>Value</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Log Median Income</td><td>10.79</td></tr>
+              <tr><td>Population Density</td><td>59.03</td></tr>
+              <tr><td>Log Population Density</td><td>9.34</td></tr>
+              <tr><td>Road Access Score</td><td>258,966.46</td></tr>
+              <tr><td>Owner-Occupancy</td><td>70%</td></tr>
+              <tr><td>High-Wage Jobs</td><td>38%</td></tr>
+              <tr><td>Commercial Share</td><td>1%</td></tr>
+              <tr><td>Commercial Share²</td><td>0%</td></tr>
+              <tr><td>Entropy</td><td>0.20</td></tr>
+              <tr><td><strong>Implied Median Income</strong></td><td>$48,503</td></tr>
+            </tbody>
+          </table>
+        </div>
       </li>
-<li><a href="html/brands/ALDI_map.html">ALDI Suitability Map</a>
-<div class="container my-4">
-  <h2 class="mb-3">🛒 ALDI Brand Suitability Summary</h2>
-  <p>
-    This section outlines the results of a logistic regression model estimating which census tracts in and around Oxford, NC are most likely to attract an <strong>ALDI</strong> grocery store. The model uses demographic, land use, and workforce indicators to predict brand suitability.
-  </p>
 
-  <h4 class="mt-4">📈 Key Predictors</h4>
-  <ul>
-    <li><strong>Log Population Density</strong>: Strongest positive predictor (Coefficient: 2.57)</li>
-    <li><strong>Road Access Score</strong>: Strong influence on suitability</li>
-    <li><strong>Population Density (Raw)</strong>: Inversely related to presence (Coefficient: -0.84)</li>
-    <li><strong>Share of Mid/Low-Wage Jobs</strong>: Positive association (working-class market preference)</li>
-    <li><strong>Land Mix (Entropy)</strong>: Slight positive effect</li>
-    <li><strong>Commercial Share</strong>: Mildly influential</li>
-  </ul>
+      <li class="list-group-item">
+        <a href="html/brands/ALDI_map.html">ALDI Suitability Map</a>
+        <p>Estimated ALDI retail potential in Oxford-area tracts based on workforce, density, and accessibility.</p>
 
-  <p>
-    Unlike higher-end chains, <strong>ALDI appears to target moderately dense, accessible areas with strong road infrastructure and a solid base of working-class residents</strong>. High income is not required, and low-wage prevalence may even boost suitability.
-  </p>
+        <div class="container my-4">
+          <h2 class="mb-3">🛒 ALDI Brand Suitability Summary</h2>
+          <p>Analysis of factors influencing ALDI expansion in mid-sized towns, using census-based model results.</p>
+          <h4 class="mt-4">📈 Key Predictors</h4>
+          <ul>
+            <li><strong>Log Population Density</strong>: Strongest positive factor (2.57)</li>
+            <li><strong>Road Access Score</strong>: Strong influence</li>
+            <li><strong>Population Density</strong>: Negative correlation</li>
+            <li><strong>Mid- & Low-Wage Share</strong>: Positive signal</li>
+            <li><strong>Land Mix (Entropy)</strong>: Mildly helpful</li>
+            <li><strong>Commercial Share</strong>: Slightly positive</li>
+          </ul>
+          <h4 class="mt-4">📊 Optimal Feature Values</h4>
+          <table class="table table-bordered table-sm w-auto">
+            <thead class="table-light">
+              <tr><th>Feature</th><th>Value</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Population Density</td><td>137.41</td></tr>
+              <tr><td>Log Population Density</td><td>8.10</td></tr>
+              <tr><td>Road Access Score</td><td>140,214.42</td></tr>
+              <tr><td>Job Density</td><td>1.18</td></tr>
+              <tr><td>Mid-Wage Jobs</td><td>34%</td></tr>
+              <tr><td>Low-Wage Jobs</td><td>23%</td></tr>
+              <tr><td>Commercial Share</td><td>1%</td></tr>
+              <tr><td>Commercial Share²</td><td>0%</td></tr>
+              <tr><td>Entropy</td><td>0.07</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </li>
+    </ul>
 
-  <h4 class="mt-4">📊 Optimal Feature Values for 50% Brand Suitability</h4>
-  <table class="table table-bordered table-sm w-auto">
-    <thead class="table-light">
-      <tr>
-        <th>Feature</th>
-        <th>Value</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td>Population Density</td><td>137.41 people/sq mi</td></tr>
-      <tr><td>Log Population Density</td><td>8.10</td></tr>
-      <tr><td>Road Access Score</td><td>140,214.42</td></tr>
-      <tr><td>Job Density</td><td>1.18 jobs per capita</td></tr>
-      <tr><td>Share of Mid-Wage Jobs</td><td>34%</td></tr>
-      <tr><td>Share of Low-Wage Jobs</td><td>23%</td></tr>
-      <tr><td>Commercial Land Share</td><td>1%</td></tr>
-      <tr><td>Commercial Share (squared)</td><td>0%</td></tr>
-      <tr><td>Entropy (Land Mix)</td><td>0.07</td></tr>
-    </tbody>
-  </table>
-
-  <p>
-    This brand profile suggests <strong>ALDI is suited to mid-density areas with efficient road access and economically diverse residents</strong>. Local planners can use these insights to target locations where affordability, access, and land use make ALDI expansion viable.
-  </p>
-</div>
-</li>
-
-
-
-        <div class="container my-4">    </ul>
-
-    <h5 class="mt-4">🧪 Why It Matters</h5>
-    <p>
-      This tool complements the displacement risk dashboard by helping policymakers ask:
-    </p>
+    <h5 class="mt-5">🧪 Why It Matters</h5>
+    <p>This tool complements the displacement risk dashboard by helping policymakers ask:</p>
     <ul>
       <li>Will annexing rooftops attract stores?</li>
       <li>Are high-need areas being overlooked by retailers?</li>
