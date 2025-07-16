@@ -641,7 +641,7 @@ def run_brand_analysis(
 
         m.save(f"html/{brand.replace(' ', '_')}_map.html")
 
-        print(f"Map saved to html/{brand.replace(' ', '_')}_map.html")
+        print(f"Map saved to html/brands/{brand.replace(' ', '_')}_map.html")
  
  
 
@@ -687,7 +687,6 @@ def main():
         tract_shapefile_path="data/tl_2024_37_tract.shp",
         census_data_path="data/poismerged.csv",
         tract_job_csv_path="data/nc_wac_S000_JT00_2022.csv.gz",
-        # output_csv_path=f"outputs/{brand.replace(' ', '_').lower()}_top10_suggestions.csv",
         show_plot=False,
         make_map=True,
         formula=None  # Optional: add CLI option for formula if needed
