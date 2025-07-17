@@ -68,7 +68,9 @@ View the maps [here](https://mattacox.github.io/locationanalysis/):
 - [`censusdis`](https://pypi.org/project/censusdis/) – ACS data via the Census API
 - [`pandas`](https://pandas.pydata.org/) and [`geopandas`](https://geopandas.org/) – data wrangling and spatial analysis
 - [`folium`](https://python-visualization.github.io/folium/) – Leaflet.js-powered interactive maps in Python
-- [`Leaflet.TimeDimension`](https://github.com/socib/Leaflet.TimeDimension) – animated time slider
+- [`Leaflet.TimeDimension`](https://github.com/socib/Leaflet.TimeDimension) – animated time slider for map visualization
+- [`scikit-learn`](https://scikit-learn.org/stable/) – logistic regression and predictive modeling for brand suitability
+
 
 ## 📁 Folder Structure
 
