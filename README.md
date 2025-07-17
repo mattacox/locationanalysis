@@ -72,17 +72,15 @@ View the maps [here](https://mattacox.github.io/locationanalysis/):
 
 ## 📁 Folder Structure
 
-<pre>
-📂html/
-├── poverty_rate_timeslider.html
-├── median_income_timeslider.html
-└── ...
-📂data/
-├── Food Access Research Atlas.csv
-└── tl_2024_37_bg.shp (plus supporting files)
-📄 index.html ← links to all map pages
+📂html/\
+├── poverty_rate_timeslider.html\
+├── median_income_timeslider.html\
+└── ...\
+📂data/\
+├── Food Access Research Atlas.csv\
+└── tl_2024_37_bg.shp (plus supporting files)\
+📄 index.html ← links to all map pages\
 📄 README.md
-</pre>
 
 > ⚠️ The `data/` folder is **not included** in this repository. See below.
 
@@ -98,13 +96,11 @@ To reproduce this project locally, you'll need:
 
 Place both in a `data/` directory:
 
-<pre>
-📂scripts/
-├── your_script.py
-└── 📂data/
-├── Food Access Research Atlas.csv
-└── tl_2024_37_bg.shp (and related files)
-</pre>
+📂scripts/\
+├── your_script.py\
+└── 📂data/\
+        ├── Food Access Research Atlas.csv\
+        └── tl_2024_37_bg.shp (and related files)
 
 ## 🚀 How to Run Locally
 
@@ -126,6 +122,8 @@ Place both in a `data/` directory:
 ## 🛒 Brand Placement Suitability Model
 
 This script estimates the likelihood of a specific retail brand locating in Oxford, NC or surrounding areas, based on logistic regression analysis of income, population density, land use, and labor market indicators at the census tract level.
+
+### Features
 
 ### Features
 
