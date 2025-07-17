@@ -55,7 +55,6 @@ Each map is animated with a time slider and covers the following indicators:
   *Criteria:* Low-income census tracts where a significant portion of residents live more than 1 mile (urban) or 10 miles (rural) from the nearest supermarket.  
   *Why it matters:* Lack of access to healthy, affordable food intersects with affordability, transportation, and health — and can compound displacement pressure in vulnerable communities.
 
-
 ## 🗺️ Interactive Map Viewer
 
 View the maps [here](https://mattacox.github.io/locationanalysis/):
@@ -71,19 +70,19 @@ View the maps [here](https://mattacox.github.io/locationanalysis/):
 - [`Leaflet.TimeDimension`](https://github.com/socib/Leaflet.TimeDimension) – animated time slider for map visualization
 - [`scikit-learn`](https://scikit-learn.org/stable/) – logistic regression and predictive modeling for brand suitability
 
-
 ## 📁 Folder Structure
 
+<pre>
 📂html/
 ├── poverty_rate_timeslider.html
 ├── median_income_timeslider.html
-├── ...
+└── ...
 📂data/
 ├── Food Access Research Atlas.csv
-├── tl_2024_37_bg.shp (plus supporting files)
+└── tl_2024_37_bg.shp (plus supporting files)
 📄 index.html ← links to all map pages
 📄 README.md
-
+</pre>
 
 > ⚠️ The `data/` folder is **not included** in this repository. See below.
 
@@ -99,19 +98,23 @@ To reproduce this project locally, you'll need:
 
 Place both in a `data/` directory:
 
-scripts/
+<pre>
+📂scripts/
 ├── your_script.py
-└── data/
+└── 📂data/
 ├── Food Access Research Atlas.csv
 └── tl_2024_37_bg.shp (and related files)
+</pre>
 
 ## 🚀 How to Run Locally
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/mattacox/locationanalysis.git
    cd locationanalysis
    ```
+
 2. Set up your Python environment and install dependencies.
 
 3. Place downloaded data in the data/ folder.
@@ -124,7 +127,7 @@ scripts/
 
 This script estimates the likelihood of a specific retail brand locating in Oxford, NC or surrounding areas, based on logistic regression analysis of income, population density, land use, and labor market indicators at the census tract level.
 
-### Features:
+### Features
 
 - Predictive map showing probability of brand presence by tract
 - Optimization to identify optimal conditions for attracting a brand
@@ -138,10 +141,6 @@ Run from the command line:
 ```bash
 python brandteststable.py --brand "Dollar General"
 ```
-
-
-
-
 
 📬 Contact
 Maintained by Matthew Cox
