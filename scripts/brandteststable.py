@@ -252,8 +252,6 @@ def run_brand_analysis(
 
     tract_jobs = tract_jobs.groupby('tract')[['C000', 'CE01', 'CE02', 'CE03']].sum().reset_index()
     tract_jobs.columns = ['GEOID', 'total_jobs', 'jobs_0_1250', 'jobs_1251_3333', 'jobs_3333_up']
-    tract_jobs['GEOID_jobs'] = tract_jobs['GEOID']
-
     tract_jobs["share_low_wage"] = tract_jobs["jobs_0_1250"] / tract_jobs["total_jobs"]
     tract_jobs["share_mid_wage"] = tract_jobs["jobs_1251_3333"] / tract_jobs["total_jobs"]
     tract_jobs["share_high_wage"] = tract_jobs["jobs_3333_up"] / tract_jobs["total_jobs"]
@@ -307,6 +305,8 @@ def run_brand_analysis(
 
     stores_with_tracts = gpd.sjoin(stores_gdf, tracts, how="left", predicate="within")
 
+    stores_with_tracts.to_csv("data/storeswithtracts.csv", index=False)
+
     store_presence = (
         stores_with_tracts.groupby(["GEOID_right", "name"])
         .size()
@@ -318,6 +318,7 @@ def run_brand_analysis(
     store_presence.to_csv("data/storepresence.csv", index=False)
 
     census_df = pd.read_csv(census_data_path)
+    print(census_df.columns)
     etj_row = {
     "GEOID": "oxford_etj",
     "population": 8972,
