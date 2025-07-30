@@ -139,6 +139,35 @@ Run from the command line:
 ```bash
 python brandteststable.py --brand "Dollar General"
 ```
+## 💰 Tax Parcel Value & Change Analysis
+
+This project includes a set of parcel-level **choropleth maps** showing changes in property value and taxation across Oxford, NC. These maps are based on **Granville County parcel shapefiles** joined with custom parcel-level tax data.
+
+### Maps Included:
+
+- **🟠 Value per Acre (VPA)**  
+  Visualizes the assessed value of land per acre to highlight parcels that deliver the most tax value to the city. Useful for understanding where public investment yields the greatest return.  
+  _Layer:_ `vpa_choropleth.html`
+
+- **🔵 Percent Value Increase**  
+  Shows how much each parcel’s value has increased since reassessment. Highlights areas experiencing the fastest growth or speculation.  
+  _Layer:_ `tax_pct_increase_choropleth.html`
+
+- **🟢 Tax Change (% Delta)**  
+  Compares actual tax bills from prior years to current bills, showing the **percent change in taxes owed** at the parcel level.  
+  _Layer:_ `tax_pct_delta_choropleth.html`
+
+- **🔴🔵 Tax Change: Red vs. Blue**  
+  A clear red-blue map where **red indicates a tax increase** and **blue indicates a tax decrease**, providing a quick visual of where fiscal burdens are shifting.  
+  _Layer:_ `tax_waterfall_choropleth.html`
+
+### Why It Matters:
+
+- Helps residents and policymakers **track which parcels or neighborhoods are facing the steepest increases in tax burden**.
+- Supports analysis of whether **tax increases align with rising land value**, or if they disproportionately affect certain property types or neighborhoods.
+- Informs equitable reinvestment by showing where **value per acre** is highest — a metric often used in smart growth planning.
+
+All maps are interactive and include **hover tooltips** with parcel IDs, acreage, owner names, and tax/value metrics.
 
 📬 Contact
 Maintained by Matthew Cox
