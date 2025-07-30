@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Oxford, NC – Parcel-Level Tax Maps</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    crossorigin="anonymous"
+  />
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Oxford, NC Maps</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+        data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+        aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html">🏠 Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="brand_analysis.html">🛒 Brand Maps</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="tax.html">💸 Tax Maps</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://github.com/mattacox/locationanalysis/wiki">📄 Wiki</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://github.com/mattacox/locationanalysis">💻 GitHub Repo</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container">
+    <h1 class="mb-4">Parcel-Level Tax Maps</h1>
+    <p>
+      These interactive maps use parcel data to show how tax values, rates, and burdens are changing across Oxford, NC. This helps reveal where land is generating the most value per acre — and where property owners are seeing the steepest increases in taxes.
+    </p>
+    <p>
+      These maps can guide community conversations around equity, land use, and revenue — especially as new development shifts the fiscal landscape.
+    </p>
+
+    <ul class="list-group">
+
+      <li class="list-group-item">
+        <a href="html/tax/vpa_choropleth.html">💰 Value per Acre (VPA)</a>
+        <p>Shows which tax parcels deliver the most value per acre. High-VPA parcels tend to be in walkable, mixed-use areas — reinforcing the fiscal power of dense, infill development.</p>
+      </li>
+
+      <li class="list-group-item">
+        <a href="html/tax/tax_pct_increase_choropleth.html">📈 Percent Change in Property Value</a>
+        <p>Visualizes how property assessments changed in the most recent revaluation. Clipped at the 2nd–95th percentile to reduce outliers. Highlights which areas have appreciated the most.</p>
+      </li>
+
+      <li class="list-group-item">
+        <a href="html/tax/tax_pct_delta_choropleth.html">🧾 Percent Change in Tax Bills</a>
+        <p>Maps the percent change in actual tax bills paid, not just value increases. Useful for seeing how revaluation and tax rate changes affect real costs.</p>
+      </li>
+
+      <li class="list-group-item">
+        <a href="html/tax/tax_waterfall_choropleth.html">🔵🔴 Tax Change – Red = ↑, Blue = ↓</a>
+        <p>A simplified red/blue map showing which parcels saw an increase or decrease in total taxes. An intuitive way to see who is paying more (or less) after revaluation.</p>
+      </li>
+
+    </ul>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    crossorigin="anonymous"
+  ></script>
+</body>
+</html>
