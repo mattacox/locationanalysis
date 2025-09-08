@@ -24,7 +24,9 @@ def unsafe_get(*args, **kwargs):
 requests.get = unsafe_get
 
 # --- Config ---
-years = list(range(2017, 2024))
+years = [2017, 2018, 2019, 2021, 2022, 2023, 
+        #  2024,
+         ]
 all_years = []
 
 # --- Load External Data ---
@@ -34,6 +36,9 @@ bg = bg[bg['COUNTYFP'].isin(['077'])]  # Filter to Granville County
 bg["tract"] = bg["GEOID"].str[:11]
 bg_usda = bg.merge(usda, left_on="tract", right_on="CensusTract", how="left")
 bg_usda["food_desert"] = bg_usda["LILATracts_1And10"] == 1
+
+
+
 
 # --- ACS Variable List ---
 bg_vars = [
@@ -47,8 +52,54 @@ bg_vars = [
     "B01001_045E", "B01001_046E", "B01001_047E", "B01001_048E", "B01001_049E",
     "B22010_001E", "B22010_002E",
     "B08201_001E", "B08201_002E",
-    "B03002_001E", "B03002_003E", "B03002_004E", "B03002_012E"
+    "B03002_001E", "B03002_003E", "B03002_004E", "B03002_012E",
+    "B25004_002E", # For rent
+
+"B25004_003E", #Rented, not occupied
+
+"B25004_004E", #For sale only
 ]
+
+def simulate_iz_effect(
+    df, 
+    new_units=4200, 
+    iz_rate=0.15, 
+    timeline=5, 
+    share_from_renters=0.30,
+    pass_through=0.5,
+    renter_col="B25003_003E",  # renter households
+    rent_burden_col="percent_cost_burdened",
+    allocation="proportional"
+):
+    """
+    Adjusts rent burden based on an Inclusionary Zoning (IZ) scenario.
+    """
+    df = df.copy()
+    
+    # Total IZ units
+    iz_units = new_units * iz_rate
+    
+    # Renters leaving rental pool
+    renters_exiting_total = iz_units * share_from_renters
+    
+    # Allocate renters exiting
+    if allocation == "proportional":
+        weights = df[renter_col] / df[renter_col].sum()
+    else:  # equal allocation
+        weights = 1 / len(df)
+    
+    df["renters_exiting"] = renters_exiting_total * weights
+    df["pct_reduction_renters"] = df["renters_exiting"] / df[renter_col]
+    
+    # Estimate rent change from reduced demand
+    df["rent_change_pct"] = df["pct_reduction_renters"] * pass_through
+    
+    # Adjust rent burden
+    df["iz_rent_burden_change"] = df[rent_burden_col] * df["rent_change_pct"]
+    df["percent_cost_burdened_iz"] = df[rent_burden_col] - df["iz_rent_burden_change"]
+    
+    return df
+
 
 # --- Loop Over Vintages ---
 for vintage in years:
@@ -90,7 +141,8 @@ for vintage in years:
 
     data["percent_less_than_30"] = less_than_30 / data["B25070_001E"]
     data["percent_cost_burdened"] = cost_burdened / data["B25070_001E"]
-    data["vacancy_rate"] = data["B25002_003E"] / data["B25002_001E"]
+    data["rental_vacancy_rate"] = data["B25004_002E"] / data["B25002_001E"]
+    data["for_sale_vacancy_rate"] = data["B25004_004E"] / data["B25002_001E"]
     data["rent_share"] = data["B25003_003E"] / data["B25003_001E"]
     data["snap_share"] = data["B22010_002E"] / data["B22010_001E"]
     data["no_car_share"] = data["B08201_002E"] / data["B08201_001E"]
@@ -145,7 +197,7 @@ long_data_geo["median_rent_pct_change"] = long_data_geo.groupby("GEOID")["median
 long_data_geo["rapid_rent_increase"] = (long_data_geo["median_rent_pct_change"] > 0.10).astype(int)
 
 # --- Normalize displacement inputs ---
-long_data_geo["inv_vacancy"] = 1 - long_data_geo["vacancy_rate"]
+long_data_geo["inv_vacancy"] = 1 - long_data_geo["rental_vacancy_rate"]
 risk_fields = [
     "rent_share", "percent_cost_burdened", "poverty_rate", "snap_share",
     "unemployment_rate", "senior_share", "inv_vacancy"
@@ -165,7 +217,7 @@ weights = {
     "snap_share": 1,
     "unemployment_rate": 1,
     "senior_share": 1,
-    "inv_vacancy": 1,
+    "inv_vacancy": 2,
 }
 total_weight = sum(weights.values())
 
@@ -184,6 +236,93 @@ long_data_geo["displacement_risk"] = MinMaxScaler().fit_transform(
     long_data_geo[["displacement_risk"]]
 )
 
+# Select Oxford block groups
+oxford_bgs = long_data_geo[long_data_geo["year"] == 2023].copy()
+
+# Simulate infill + IZ effect
+scenario_infill = simulate_iz_effect(
+    df=oxford_bgs,
+    new_units=400 * len(oxford_bgs),  # 200 units per block group
+    iz_rate=0.20,                     # 10% of new units are IZ
+    timeline=10,
+    share_from_renters=0.3,           # 30% of IZ units come from current renters
+    pass_through=0.5                   # fraction of rent decrease that passes through
+)
+
+# --- Recompute displacement risk using IZ-adjusted rent burden ---
+risk_fields = [
+    "rent_share", "poverty_rate", "snap_share", "unemployment_rate",
+    "senior_share", "inv_vacancy"
+]
+
+# Use IZ-adjusted rent burden instead of baseline
+scenario_infill["percent_cost_burdened_for_risk"] = scenario_infill["percent_cost_burdened_iz"]
+
+risk_fields_with_iz = risk_fields + ["percent_cost_burdened_for_risk"]
+
+normalized_iz = pd.DataFrame(
+    scaler.fit_transform(scenario_infill[risk_fields_with_iz].fillna(0)),
+    columns=risk_fields_with_iz,
+    index=scenario_infill.index,
+)
+
+scenario_infill["base_displacement_index_iz"] = (
+    sum(normalized_iz[field] * weights.get(field, 1) for field in risk_fields_with_iz) / total_weight
+)
+
+# Add the same binary penalties (demographic/rent change)
+scenario_infill["displacement_risk_iz"] = (
+    scenario_infill["base_displacement_index_iz"]
+    + scenario_infill["black_decline"] * 0.5
+    + scenario_infill["latino_decline"] * 0.5
+    + scenario_infill["rapid_rent_increase"] * 0.5
+)
+
+scenario_infill["displacement_risk_iz"] = MinMaxScaler().fit_transform(
+    scenario_infill[["displacement_risk_iz"]]
+)
+
+scenario_infill["delta_displacement_risk"] = (
+    scenario_infill["displacement_risk_iz"] - scenario_infill["displacement_risk"]
+)
+
+
+summary = scenario_infill[[
+    "GEOID",
+    "percent_cost_burdened",
+    "percent_cost_burdened_iz",
+    "renters_exiting",
+    "displacement_risk",
+    "displacement_risk_iz",
+    "delta_displacement_risk"
+]].copy()
+
+
+# Add delta columns
+summary["delta_rent_burden"] = summary["percent_cost_burdened_iz"] - summary["percent_cost_burdened"]
+
+# Format as percentages
+summary["delta_rent_burden_numeric"] = summary["percent_cost_burdened_iz"] - summary["percent_cost_burdened"]
+summary["percent_cost_burdened"] = summary["percent_cost_burdened"].map("{:.1%}".format)
+summary["percent_cost_burdened_iz"] = summary["percent_cost_burdened_iz"].map("{:.1%}".format)
+summary["delta_rent_burden"] = summary["delta_rent_burden_numeric"].map("{:+.1%}".format)
+
+
+
+
+print(summary.head(10))  # first 10 block groups
+
+avg_delta = scenario_infill["percent_cost_burdened_iz"].mean() - scenario_infill["percent_cost_burdened"].mean()
+print(f"Average reduction in rent burden: {avg_delta:.2%}")
+
+total_renters_exiting = scenario_infill["renters_exiting"].sum()
+print(f"Total renters able to move into new IZ units: {int(total_renters_exiting)}")
+
+# Use numeric column for sorting
+top_blocks = summary.sort_values("delta_rent_burden_numeric", ascending=True).head(5)
+print(top_blocks[["GEOID", "delta_rent_burden", "percent_cost_burdened", "percent_cost_burdened_iz"]])
+
+
 # --- Clean geometries ---
 if data.crs is None:
     data.set_crs(epsg=4269, inplace=True)
@@ -194,7 +333,7 @@ data = data[data.is_valid & ~data.geometry.is_empty]
 # --- Map setup ---
 indicators = [
     "poverty_rate", "percent_cost_burdened", "unemployment_rate", "snap_share",
-    "rent_share", "senior_share", "displacement_risk", "vacancy_rate",
+    "rent_share", "senior_share", "displacement_risk", "rental_vacancy_rate",
     "median_income", "median_rent", "black_share", "white_share", "latino_share"
 ]
 
@@ -205,9 +344,13 @@ indicator_ranges = {
     "snap_share": (0, 0.5),
     "rent_share": (0, 0.8),
     "senior_share": (0, 0.5),
-    "vacancy_rate": (0, 0.4),
+    "rental_vacancy_rate": (0, 0.4),
     "displacement_risk": (0, 1.0),
     "median_rent": (300, 1500),
+    "black_share": (0, 1),
+    "white_share": (0, 1),
+    "latino_share": (0, 1),
+    "median_income": (30000, 200000),  # adjust if needed
 }
 
 # --- Generate TimeSlider maps ---
@@ -231,8 +374,9 @@ for indicator in indicators:
     )
 
     # Create color map
-    vmin = indicator_ranges.get(indicator, (long_data_geo[indicator].min(),))[0]
-    vmax = indicator_ranges.get(indicator, (long_data_geo[indicator].max(),))[1]
+    vmin = indicator_ranges.get(indicator, (long_data_geo[indicator].min(), long_data_geo[indicator].max()))[0]
+    vmax = indicator_ranges.get(indicator, (long_data_geo[indicator].min(), long_data_geo[indicator].max()))[1]
+
     colormap = cm.linear.Blues_09.scale(vmin, vmax)
     colormap.caption = {
         "median_income": "Median Income ($)",
@@ -312,4 +456,62 @@ for indicator in indicators:
     m.save(output_path)
     print(f"✅ Saved: {output_path}")
 
+latest_displacement = long_data_geo[long_data_geo["year"] == 2023][["GEOID", "displacement_risk"]].copy()
+latest_displacement["displacement_risk_pct"] = (latest_displacement["displacement_risk"] * 100).map("{:.1f}%".format)
+# Save to CSV
+latest_displacement.to_csv("data/displacement_risk_2023.csv", index=False)
+print("✅ Saved 2023 displacement risk scores to data/displacement_risk_2023.csv")
 
+# --- Turn summary into a GeoDataFrame ---
+summary_gdf = scenario_infill.merge(
+    summary,
+    on="GEOID",
+    how="left",
+    suffixes=("", "_summary")
+)
+summary_gdf = gpd.GeoDataFrame(summary_gdf, geometry="geometry", crs="EPSG:4326")
+
+# --- Set up color map based on delta_rent_burden_numeric ---
+vmin, vmax = summary_gdf["delta_rent_burden_numeric"].min(), summary_gdf["delta_rent_burden_numeric"].max()
+colormap = cm.linear.RdYlGn_11.scale(vmin, vmax)
+colormap.caption = "Change in Rent Burden (After IZ Simulation)"
+
+# --- Build Folium Map ---
+m = folium.Map(location=[36.3, -78.6], zoom_start=14, tiles="OpenStreetMap")
+
+folium.TileLayer(
+    tiles='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    attr='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    name='OSM'
+).add_to(m)
+
+# IZ-adjusted polygons
+for _, row in summary_gdf.iterrows():
+    col = colormap(row["delta_rent_burden_numeric"])
+    popup_html = f"""
+    <div style='font-size:13px; max-width:220px;'>
+        <strong>GEOID:</strong> {row['GEOID']}<br>
+        <strong>Original Rent Burden:</strong> {row['percent_cost_burdened']*100:.1f}%<br>
+        <strong>IZ Adjusted Rent Burden:</strong> {row['percent_cost_burdened_iz']*100:.1f}%<br>
+        <strong>Delta Rent Burden:</strong> {row['delta_rent_burden_numeric']*100:+.1f}%<br>
+        <strong>Renters Exiting:</strong> {int(row['renters_exiting'])}<br><br>
+        <strong>Original Displacement Risk:</strong> {row['displacement_risk']*100:.1f}%<br>
+        <strong>IZ Displacement Risk:</strong> {row['displacement_risk_iz']*100:.1f}%<br>
+        <strong>Delta Displacement Risk:</strong> {row['delta_displacement_risk']*100:+.1f}%
+    </div>
+    """
+    folium.GeoJson(
+        row["geometry"],
+        style_function=lambda feature, col=col: {
+            "fillColor": col,
+            "color": "black",
+            "weight": 0.7,
+            "fillOpacity": 0.2,
+        },
+        tooltip=popup_html
+    ).add_to(m)
+
+
+colormap.add_to(m)
+m.save("html/iz_displacement_rent_map.html")
+print("✅ IZ + Displacement Risk map saved!")
