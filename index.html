@@ -1,179 +1,221 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Oxford, NC Location Analysis Maps</title>
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-    crossorigin="anonymous"
-  />
-</head>
-<body>
-  <!-- Navigation Bar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Oxford, NC Maps</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-      data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
-      aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Oxford, NC Location Analysis Maps</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Oxford, NC Maps</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+        data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+        aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-    <!-- Navigation links -->
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="index.html">🏠 Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="brand_analysis.html">🛒 Brand Maps</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="tax.html">💸 Tax Maps</a>
-        </li>
+      <!-- Navigation links -->
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="index.html">🏠 Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="brand_analysis.html">🛒 Brand Maps</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="tax.html">💸 Tax Maps</a>
+          </li>
 
-        <li class="nav-item">
-          <a class="nav-link" href="https://github.com/mattacox/locationanalysis/wiki">📄 Wiki</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="https://github.com/mattacox/locationanalysis">💻 GitHub Repo</a>
-        </li>
-      </ul>
+          <li class="nav-item">
+            <a class="nav-link" href="https://github.com/mattacox/locationanalysis/wiki">📄 Wiki</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://github.com/mattacox/locationanalysis">💻 GitHub Repo</a>
+          </li>
+        </ul>
+      </div>
     </div>
-  </div>
-</nav>
+  </nav>
 
 
-  <!-- Main Content -->
-  <div class="container">
-    <h1 class="mb-4">Oxford Demographic Dashboards</h1>
-    <ul class="list-group">
-      <li class="list-group-item"><a href="html/poverty_rate_timeslider.html">Poverty Rate</a>
-      <p>The share of the population living below the federal poverty line.  </p> 
-  <p>
-  *Typical range:* 5–30%; *High risk:* above 20%.</p></li>
-      <li class="list-group-item"><a href="html/median_income_timeslider.html">Median Income</a>
-      <p>The median annual income for households, indicating overall economic well-being.  </p> 
-  <p>
-  *Typical range:* $30,000–$70,000; *Low income:* below $40,000.</p></li>
-      <li class="list-group-item"><a href="html/unemployment_rate_timeslider.html">Unemployment Rate</a>
-      <p>The proportion of the labor force currently unemployed and seeking work.  </p> 
-  <p>
-  *Typical range:* 3–12%; *High risk:* above 10%.</p></li>
-      <li class="list-group-item"><a href="html/snap_share_timeslider.html">SNAP Share</a>
-      <p>The share of households receiving Supplemental Nutrition Assistance Program benefits, reflecting economic hardship.  </p> 
-  <p>
-  *Typical range:* 5–30%; *High risk:* above 20%.</p></li>
+    <!-- Main Content -->
+    <div class="container">
+      <h1 class="mb-4">Oxford Demographic Dashboards</h1>
+      <ul class="list-group">
+        <li class="list-group-item"><a href="html/poverty_rate_timeslider.html">Poverty Rate</a>
+        <p>The share of the population living below the federal poverty line.  </p> 
+    <p>
+    *Typical range:* 5–30%; *High risk:* above 20%.</p></li>
+        <li class="list-group-item"><a href="html/median_income_timeslider.html">Median Income</a>
+        <p>The median annual income for households, indicating overall economic well-being.  </p> 
+    <p>
+    *Typical range:* $30,000–$70,000; *Low income:* below $40,000.</p></li>
+        <li class="list-group-item"><a href="html/unemployment_rate_timeslider.html">Unemployment Rate</a>
+        <p>The proportion of the labor force currently unemployed and seeking work.  </p> 
+    <p>
+    *Typical range:* 3–12%; *High risk:* above 10%.</p></li>
+        <li class="list-group-item"><a href="html/snap_share_timeslider.html">SNAP Share</a>
+        <p>The share of households receiving Supplemental Nutrition Assistance Program benefits, reflecting economic hardship.  </p> 
+    <p>
+    *Typical range:* 5–30%; *High risk:* above 20%.</p></li>
+
+    <li class="list-group-item">
+    <a href="html/food_deserts_map.html">USDA Food Desert Areas</a>
+    <p>Designated census tracts that meet low-income and low-access thresholds, based on the USDA Food Access Research Atlas. Highlights areas where residents may face barriers to fresh food access.</p>
+    <p>
+      <em>Food desert criteria:</em> Low-income + ≥33% of the population living >1 mile (urban) or >10 miles (rural) from a grocery store.
+    </p>
+  </li>
+
+        <li class="list-group-item"><a href="html/rent_share_timeslider.html">Renter Share</a>
+        <p>The proportion of occupied housing units that are renter-occupied, indicating housing tenure patterns. </p> 
+    <p> 
+    *Typical range:* 20–60%; varies widely by neighborhood.</p></li>
+        <li class="list-group-item"><a href="html/percent_cost_burdened_timeslider.html">Rent Burden (≥30%)</a>
+        <p>Percentage of renters spending 30% or more of household income on rent, signaling housing affordability stress. </p> 
+    <p>*Typical range:* 25–50%; *High risk:* above 30%.</p></li>
+        <li class="list-group-item"><a href="html/senior_share_timeslider.html">Senior Share</a>
+        <p>The share of residents aged 65 and older, indicating age demographics and potential service needs. </p> 
+    <p> 
+    *Typical range:* 10–25%; *Senior-heavy:* above 20%.</p></li>
+        <li class="list-group-item"><a href="html/displacement_risk_timeslider.html">Displacement Risk Index</a>
+        <p>A composite indicator combining rent burden, poverty, SNAP participation, unemployment, vacancy, and senior share to identify neighborhoods at higher risk of displacement pressures.  </p> 
+    <p>  *Typical range:* 0 (low risk) to 1 (high risk); *High risk:* above 0.6.</p>
+  <p>ℹ️ About Normalization: The displacement risk index is normalized using all block groups in Granville County to create a consistent reference frame. This approach allows block groups in Oxford to be evaluated in context, highlighting which areas stand out not just locally, but county-wide. An Oxford-only normalization would compress the score range and make internal differences appear larger, but it would limit comparability and may understate broader risk patterns. Oxford’s 12 block groups are small in number but internally diverse—normalizing at the county level supports clearer regional policy targeting without distorting intra-city variation.</p></li>
+        <li class="list-group-item"><a href="html/vacancy_rate_timeslider.html">Vacancy Rates</a>
+          <p>The share of housing units that are vacant, which can reflect housing market conditions or disinvestment.  
+    *Typical range:* 5–15%; *High vacancy:* above 10%.</p></li>
+    <li class="list-group-item">
+    <a href="html/rental_vacancy_rate_timeslider.html">Rental Vacancy Rate</a>
+    <p>
+      The percentage of rental housing units that are vacant. High vacancy rates can
+      indicate weak rental demand or disinvestment, while very low vacancy may
+      signal tight housing markets.
+    </p>
+    <p>
+      <em>Typical range:</em> 5–12%; <em>High vacancy:</em> above 10%.
+    </p>
+  </li>
 
   <li class="list-group-item">
-  <a href="html/food_deserts_map.html">USDA Food Desert Areas</a>
-  <p>Designated census tracts that meet low-income and low-access thresholds, based on the USDA Food Access Research Atlas. Highlights areas where residents may face barriers to fresh food access.</p>
-  <p>
-    <em>Food desert criteria:</em> Low-income + ≥33% of the population living >1 mile (urban) or >10 miles (rural) from a grocery store.
-  </p>
-</li>
+    <a href="brand_analysis.html">🛒 Brand Suitability Maps</a>
+    <p>Interactive maps showing which census tracts in Oxford, NC are most suitable for specific grocery and retail chains, based on income, density, commuting, and land use indicators.</p>
+    <p>Supports community planning around annexation, retail access, and economic development potential.</p>
+  </li>
 
-      <li class="list-group-item"><a href="html/rent_share_timeslider.html">Renter Share</a>
-      <p>The proportion of occupied housing units that are renter-occupied, indicating housing tenure patterns. </p> 
-  <p> 
-  *Typical range:* 20–60%; varies widely by neighborhood.</p></li>
-      <li class="list-group-item"><a href="html/percent_cost_burdened_timeslider.html">Rent Burden (≥30%)</a>
-      <p>Percentage of renters spending 30% or more of household income on rent, signaling housing affordability stress. </p> 
-  <p>*Typical range:* 25–50%; *High risk:* above 30%.</p></li>
-      <li class="list-group-item"><a href="html/senior_share_timeslider.html">Senior Share</a>
-      <p>The share of residents aged 65 and older, indicating age demographics and potential service needs. </p> 
-  <p> 
-  *Typical range:* 10–25%; *Senior-heavy:* above 20%.</p></li>
-      <li class="list-group-item"><a href="html/displacement_risk_timeslider.html">Displacement Risk Index</a>
-      <p>A composite indicator combining rent burden, poverty, SNAP participation, unemployment, vacancy, and senior share to identify neighborhoods at higher risk of displacement pressures.  </p> 
-  <p>  *Typical range:* 0 (low risk) to 1 (high risk); *High risk:* above 0.6.</p>
-<p>ℹ️ About Normalization: The displacement risk index is normalized using all block groups in Granville County to create a consistent reference frame. This approach allows block groups in Oxford to be evaluated in context, highlighting which areas stand out not just locally, but county-wide. An Oxford-only normalization would compress the score range and make internal differences appear larger, but it would limit comparability and may understate broader risk patterns. Oxford’s 12 block groups are small in number but internally diverse—normalizing at the county level supports clearer regional policy targeting without distorting intra-city variation.</p></li>
-      <li class="list-group-item"><a href="html/vacancy_rate_timeslider.html">Vacancy Rates</a>
-        <p>The share of housing units that are vacant, which can reflect housing market conditions or disinvestment.  
-  *Typical range:* 5–15%; *High vacancy:* above 10%.</p></li>
   <li class="list-group-item">
-  <a href="html/rental_vacancy_rate_timeslider.html">Rental Vacancy Rate</a>
-  <p>
-    The percentage of rental housing units that are vacant. High vacancy rates can
-    indicate weak rental demand or disinvestment, while very low vacancy may
-    signal tight housing markets.
-  </p>
-  <p>
-    <em>Typical range:</em> 5–12%; <em>High vacancy:</em> above 10%.
-  </p>
-</li>
-
-<li class="list-group-item">
-  <a href="brand_analysis.html">🛒 Brand Suitability Maps</a>
-  <p>Interactive maps showing which census tracts in Oxford, NC are most suitable for specific grocery and retail chains, based on income, density, commuting, and land use indicators.</p>
-  <p>Supports community planning around annexation, retail access, and economic development potential.</p>
-</li>
-
-<li class="list-group-item">
-  <a href="tax.html">💸 Parcel-Level Tax Maps</a>
-  <p>These interactive maps reveal parcel-by-parcel changes in property value and tax liability in Oxford, NC. By combining 2023 tax data with parcel shapefiles and acreage, the following layers offer insight into the fiscal dynamics of local land use:</p>
-  <ul>
-    <li><strong><a href="html/tax/vpa_choropleth.html">Value per Acre (VPA)</a></strong> – Highlights which properties generate the most value relative to land size, a key metric for guiding equitable reinvestment and sustainable land policy.</li>
-    <li><strong><a href="html/tax/tax_pct_increase_choropleth.html">Percent Change in Property Value</a></strong> – Visualizes how property assessments have changed since the last revaluation, offering insight into appreciation, speculation, and uneven growth.</li>
-    <li><strong><a href="html/tax/tax_pct_delta_choropleth.html">Percent Change in Tax Bills</a></strong> – Shows how much tax bills have increased or decreased, clipped to remove outliers, helping to identify neighborhoods facing steep tax hikes.</li>
-    <li><strong><a href="html/tax/tax_waterfall_choropleth.html">Tax Change (Red ↑ / Blue ↓)</a></strong> – A simple red/blue map that highlights parcels with increasing or decreasing tax burdens. Useful for understanding redistribution effects of revaluation policies.</li>
-
-  </ul>
-  <p>This tax-focused layer set supports public transparency and offers planners, residents, and policymakers a granular view of fiscal change across the city.</p>
-</li>
-<li class="list-group-item">
-  <a href="html/tax/tax_pct_increase_blockgroup.html">🗺️ Block Group-Level Tax Burden</a>
-  <p>
-    This map aggregates parcel-level tax change data to the census block group level. It helps reveal where neighborhoods — particularly those facing high displacement risk — are shouldering the greatest increases in property tax burden.
-  </p>
-  <p>
-    By comparing this map with the <a href="html/displacement_risk_timeslider.html">Displacement Risk Index</a>, users can explore how tax policy may be intersecting with vulnerability — and where targeted reinvestment might be most needed.
-  </p>
-</li>
-
-
-<li class="list-group-item">
-  <a href="html/iz_displacement_rent_map.html">Inclusionary Zoning (IZ) Impact Map</a>
-  <p>
-    This simulation illustrates how Oxford’s displacement risk index and rent burden might shift if new housing 
-    included a share of <em>inclusionary zoning</em> (IZ) units. 
-  </p>
-  <p>
-    🔎 <strong>Important context:</strong> In Oxford, where little infill development is expected and 
-    most new housing occurs through non-contiguous annexation, IZ has limited immediate effect on rent burden 
-    within existing neighborhoods. In fact, the model may show <em>worsening displacement risk</em> because 
-    rising market rents and broader economic pressures outweigh the small number of affordable units added 
-    through IZ. This does not mean IZ causes displacement, but rather that <strong>IZ alone is insufficient 
-    to counteract existing pressures</strong>.
-  </p>
-  <p>
-    ➡️ This map is best read as a “stress test”: it shows that without significant infill or complementary 
-    affordability measures, IZ units built outside city limits are unlikely to reduce renter displacement risk 
-    in Oxford’s most vulnerable neighborhoods.
-  </p>
-</li>
-<li class="list-group-item">
-  <a href="html/oxford_units_needed_map.html">📊 Units Needed to Reach Target Displacement Risk</a>
-  <p>
-    This map visualizes the estimated number of new housing units required in each census block group 
-    to bring displacement risk below the 40% threshold under current modeling assumptions.
-  </p>
-  <p>
-    It highlights the magnitude of intervention needed and where inclusionary zoning or other 
-    affordability measures could have the greatest impact.  
-  </p>
-</li>
-
+    <a href="tax.html">💸 Parcel-Level Tax Maps</a>
+    <p>These interactive maps reveal parcel-by-parcel changes in property value and tax liability in Oxford, NC. By combining 2023 tax data with parcel shapefiles and acreage, the following layers offer insight into the fiscal dynamics of local land use:</p>
+    <ul>
+      <li><strong><a href="html/tax/vpa_choropleth.html">Value per Acre (VPA)</a></strong> – Highlights which properties generate the most value relative to land size, a key metric for guiding equitable reinvestment and sustainable land policy.</li>
+      <li><strong><a href="html/tax/tax_pct_increase_choropleth.html">Percent Change in Property Value</a></strong> – Visualizes how property assessments have changed since the last revaluation, offering insight into appreciation, speculation, and uneven growth.</li>
+      <li><strong><a href="html/tax/tax_pct_delta_choropleth.html">Percent Change in Tax Bills</a></strong> – Shows how much tax bills have increased or decreased, clipped to remove outliers, helping to identify neighborhoods facing steep tax hikes.</li>
+      <li><strong><a href="html/tax/tax_waterfall_choropleth.html">Tax Change (Red ↑ / Blue ↓)</a></strong> – A simple red/blue map that highlights parcels with increasing or decreasing tax burdens. Useful for understanding redistribution effects of revaluation policies.</li>
 
     </ul>
-  </div>
+    <p>This tax-focused layer set supports public transparency and offers planners, residents, and policymakers a granular view of fiscal change across the city.</p>
+  </li>
+  <li class="list-group-item">
+    <a href="html/tax/tax_pct_increase_blockgroup.html">🗺️ Block Group-Level Tax Burden</a>
+    <p>
+      This map aggregates parcel-level tax change data to the census block group level. It helps reveal where neighborhoods — particularly those facing high displacement risk — are shouldering the greatest increases in property tax burden.
+    </p>
+    <p>
+      By comparing this map with the <a href="html/displacement_risk_timeslider.html">Displacement Risk Index</a>, users can explore how tax policy may be intersecting with vulnerability — and where targeted reinvestment might be most needed.
+    </p>
+  </li>
 
-  <!-- Bootstrap JS Bundle -->
-  <script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-    crossorigin="anonymous"
-  ></script>
-</body>
-</html>
+
+  <li class="list-group-item">
+    <a href="html/iz_displacement_rent_map.html">Inclusionary Zoning (IZ) Impact Map</a>
+    <p>
+      This simulation illustrates how Oxford’s displacement risk index and rent burden might shift if new housing 
+      included a share of <em>inclusionary zoning</em> (IZ) units. 
+    </p>
+    <p>
+      🔎 <strong>Important context:</strong> In Oxford, where little infill development is expected and 
+      most new housing occurs through non-contiguous annexation, IZ has limited immediate effect on rent burden 
+      within existing neighborhoods. In fact, the model may show <em>worsening displacement risk</em> because 
+      rising market rents and broader economic pressures outweigh the small number of affordable units added 
+      through IZ. This does not mean IZ causes displacement, but rather that <strong>IZ alone is insufficient 
+      to counteract existing pressures</strong>.
+    </p>
+    <p>
+      ➡️ This map is best read as a “stress test”: it shows that without significant infill or complementary 
+      affordability measures, IZ units built outside city limits are unlikely to reduce renter displacement risk 
+      in Oxford’s most vulnerable neighborhoods.
+    </p>
+  </li>
+  <li class="list-group-item">
+    <a href="html/oxford_units_needed_map.html">📊 Units Needed to Reach Target Displacement Risk</a>
+    <p>
+      This map visualizes the estimated number of new housing units required in each census block group 
+      to bring displacement risk below the 40% threshold under current modeling assumptions.
+    </p>
+    <p>
+      It highlights the magnitude of intervention needed and where inclusionary zoning or other 
+      affordability measures could have the greatest impact.  
+    </p>
+  </li>
+
+
+      </ul>
+    </div>
+
+    <section id="employment" class="section">
+  <div class="container">
+    <h2>Employment & Commuting Patterns in Oxford, NC</h2>
+    <p>
+      This section visualizes workforce patterns at the block group level for Oxford, NC. 
+      We use U.S. Census ACS 5-year data and LODES commuting data to illustrate where residents live, where they work, and commuting flows.
+    </p>
+
+    <div class="map-links" style="margin-bottom:1em;">
+      <ul>
+        <li><a href="html/oxford_commuting_patterns.html" target="_blank">Residents (RAC) & Jobs (WAC) Map</a></li>
+        <li><a href="html/oxford_outbound_commuters.html" target="_blank">Outbound Worker Commutes (Oxford → Outside)</a></li>
+        <li><a href="html/oxford_inbound_commuters.html" target="_blank">Inbound Worker Commutes (Outside → Oxford)</a></li>
+        <li><a href="html/oxford_internal_commuters.html" target="_blank">Internal Worker Commutes (Within Oxford)</a></li>
+        <li><a href="html/oxford_income_commute.html" target="_blank">Median Income & Predominant Commute Type</a></li>
+      </ul>
+    </div>
+
+    <p>
+      Each map includes interactive popups and tooltips showing block group-level totals:
+      <ul>
+        <li><strong>Internal Workers:</strong> Residents who work in the same block group.</li>
+        <li><strong>Outbound Workers:</strong> Residents commuting to jobs outside Oxford.</li>
+        <li><strong>Inbound Workers:</strong> Non-residents commuting into Oxford.</li>
+        <li><strong>Median Income:</strong> Block group-level median household income.</li>
+      </ul>
+    </p>
+
+    <p>
+      The block groups are color-coded by <em>predominant commute type</em>:
+      <span style="color:#2ca25f;font-weight:bold;">Internal (Green)</span>,
+      <span style="color:#3182bd;font-weight:bold;">Outbound (Blue)</span>, and
+      <span style="color:#de2d26;font-weight:bold;">Inbound (Red)</span>.
+    </p>
+
+    <p>
+      These visualizations allow city planners and community members to explore commuting patterns, workforce concentrations, and economic indicators across Oxford, NC.
+    </p>
+  </div>
+</section>
+
+
+    <!-- Bootstrap JS Bundle -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+  </html>
