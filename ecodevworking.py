@@ -65,45 +65,6 @@ bg_vars = [
 "B08301_010E", #workers from home
 ]
 
-def simulate_iz_effect(
-    df, 
-    new_units=20000, 
-    iz_rate=0.15, 
-    timeline=10, 
-    share_from_renters=0.30,
-    pass_through=0.5,
-    renter_col="B25003_003E",  # renter households
-    rent_burden_col="percent_cost_burdened",
-    allocation="proportional"
-):
-    """
-    Adjusts rent burden based on an Inclusionary Zoning (IZ) scenario.
-    """
-    df = df.copy()
-    
-    # Total IZ units
-    iz_units = new_units * iz_rate
-    
-    # Renters leaving rental pool
-    renters_exiting_total = iz_units * share_from_renters
-    
-    # Allocate renters exiting
-    if allocation == "proportional":
-        weights = df[renter_col] / df[renter_col].sum()
-    else:  # equal allocation
-        weights = 1 / len(df)
-    
-    df["renters_exiting"] = renters_exiting_total * weights
-    df["pct_reduction_renters"] = df["renters_exiting"] / df[renter_col]
-    
-    # Estimate rent change from reduced demand
-    df["rent_change_pct"] = df["pct_reduction_renters"] * pass_through
-    
-    # Adjust rent burden
-    df["iz_rent_burden_change"] = df[rent_burden_col] * df["rent_change_pct"]
-    df["percent_cost_burdened_iz"] = df[rent_burden_col] - df["iz_rent_burden_change"]
-    
-    return df
 
 
 # --- Loop Over Vintages ---
