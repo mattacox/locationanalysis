@@ -1,3 +1,4 @@
+#years and all years for ACS5 data pull
 years = [2017, 
          2018, 
          2019, 
@@ -59,7 +60,8 @@ bg_vars = [
     "B08301_001E", #total workers
     "B08301_010E", #workers from home
 ]
-# Senior Share
+
+# Senior Share for Displacement Index, etc.
 senior_vars = [
     "B01001_020E", 
     "B01001_021E", 
@@ -75,6 +77,8 @@ senior_vars = [
     "B01001_049E",
 ]
 
+#Risk Fields for Displacemenr Indexing
+
 risk_fields = [
     "rent_share", "percent_cost_burdened", "poverty_rate", "snap_share",
     "unemployment_rate", "senior_share", "inv_vacancy"
@@ -89,6 +93,7 @@ iz_risk_fields = [
 
 
 # --- Weighted composite index for Displacement Risk---
+
 weights = {
     "rent_share": 1,
     "percent_cost_burdened": 2,
@@ -101,13 +106,15 @@ weights = {
 
 total_weight = sum(weights.values())
 
-# --- Map setup ---
+# --- Indicators for individual dempgraphic Map setup ---
 indicators = [
     "poverty_rate", "percent_cost_burdened", "unemployment_rate", "snap_share",
     "rent_share", "senior_share", "displacement_risk", "rental_vacancy_rate",
     "median_income", "median_rent", "black_share", "white_share", "latino_share", "pct_work_from_home"
 
 ]
+
+# --- ranges for cloropleth mapping ---
 
 indicator_ranges = {
     "poverty_rate": (0, 0.5),
