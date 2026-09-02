@@ -594,3 +594,32 @@ def safe_download_acs(vintage, max_retries=3, delay=3):
             else:
                 print(f"❌ Failed after {max_retries} attempts — skipping {vintage}")
                 return None
+
+
+def safe_download_acs_tract(vintage, max_retries=3, delay=3):
+    """
+    Download ACS tract-level data with retries to avoid hard script failure.
+    
+    Returns a GeoDataFrame with tract geometries and requested variables.
+    """
+    for attempt in range(1, max_retries + 1):
+        try:
+            print(f"Attempt {attempt}: pulling ACS {vintage} (tract level)")
+            data = ced.download(
+                dataset=ACS5,
+                vintage=vintage,
+                download_variables=constants.bg_vars,  # you can rename to tract_vars if needed
+                state=states.NC,
+                county=['077'],         # Granville County
+                tract='*',              # <- tract-level download
+                with_geometry=True,
+            )
+            return data
+        except Exception as e:
+            print(f"⚠️ Error pulling ACS {vintage}: {e}")
+            if attempt < max_retries:
+                print(f"Retrying in {delay} sec...")
+                time.sleep(delay)
+            else:
+                print(f"❌ Failed after {max_retries} attempts — skipping {vintage}")
+                return None

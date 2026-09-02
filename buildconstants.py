@@ -3,16 +3,17 @@ years = [
         # 2016,
          2017, 
          2018, 
-         2019, 
+         2019,
+         2020,
          2021, 
          2022, 
          2023, 
          2024,
-         2025,
          ]
 all_years = []
 
-# --- ACS Variable List for Census API---
+# --- ACS Block Group Variable List for Census API---
+
 bg_vars = [
     "B19013_001E", 
     "B17021_002E", 
@@ -80,57 +81,52 @@ senior_vars = [
     "B01001_049E",
 ]
 
-#Risk Fields for Displacemenr Indexing
+# --- Risk Fields for Displacement Indexing ---
 
-# constants.py
 risk_fields = [
-    "rent_share",
-    "percent_cost_burdened",
-    "poverty_rate",
-    "snap_share_smoothed",
-    "unemployment_rate",
-    "senior_share",
-    "inv_vacancy",
-    "black_decline",
-    "latino_decline"
-]
+    "rent_share", 
+    "percent_cost_burdened", 
+    "poverty_rate", 
+    "snap_share",
+    "unemployment_rate", 
+    "senior_share", 
+    "inv_vacancy"
+    ]
+
+# --- Weighted composite index for Displacement Risk---
 
 weights = {
     "rent_share": 1,
-    "percent_cost_burdened": 3,
+    "percent_cost_burdened": 2,
     "poverty_rate": 1,
-    "snap_share_smoothed": 0.5,
-    "unemployment_rate": 0.8,
+    "snap_share": 1,
+    "unemployment_rate": 1,
     "senior_share": 1,
-    "inv_vacancy": 3,
-    "black_decline":1, 
-    "latino_decline":1,
+    "inv_vacancy": 2,
 }
 
 total_weight = sum(weights.values())
 
-
-
-# --- Recompute displacement risk using IZ-adjusted rent burden ---
-
-iz_risk_fields = [
-    "rent_share", "poverty_rate", "snap_share", "unemployment_rate",
-    "senior_share", "inv_vacancy"
-]
-
-
-
-
-
 # --- Indicators for individual dempgraphic Map setup ---
+
 indicators = [
-    "poverty_rate", "percent_cost_burdened", "unemployment_rate", "snap_share",
-    "rent_share", "senior_share", "displacement_risk", "rental_vacancy_rate",
-    "median_income", "median_rent", "black_share", "white_share", "latino_share", "pct_work_from_home"
+    "poverty_rate", 
+    "percent_cost_burdened", 
+    "unemployment_rate", 
+    "snap_share",
+    "rent_share", 
+    "senior_share", 
+    "displacement_risk", 
+    "rental_vacancy_rate",
+    "median_income", 
+    "median_rent", 
+    "black_share", 
+    "white_share", 
+    "latino_share", 
+    "pct_work_from_home"
+    ]
 
-]
-
-# --- ranges for cloropleth mapping ---
+# --- ranges for chloropleth mapping ---
 
 indicator_ranges = {
     "poverty_rate": (0, 0.5),
@@ -140,10 +136,10 @@ indicator_ranges = {
     "rent_share": (0, 0.8),
     "senior_share": (0, 0.5),
     "rental_vacancy_rate": (0, 0.4),
-    "displacement_risk": (0, .5),
+    "displacement_risk": (0, 1.0),
     "median_rent": (300, 1500),
-    "black_share": (0, .8),
-    "white_share": (0, .8),
-    "latino_share": (0, .2),
-    "median_income": (30000, 106000),
+    "black_share": (0, 1),
+    "white_share": (0, 1),
+    "latino_share": (0, 1),
+    "median_income": (30000, 200000),
 }

@@ -33,3 +33,19 @@ Thumbs.db
 
 # Ignore Jupyter Notebook checkpoints (if any)
 .ipynb_checkpoints/
+
+
+# Local environment and credentials
+
+.env
+.env.*
+
+# Generated/cache files
+
+cache/
+frames/
+plots/
+
+# Local browser/session data
+
+cf_cookies.json

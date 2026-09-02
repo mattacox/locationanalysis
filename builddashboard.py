@@ -1,4 +1,5 @@
 # --- Imports ---
+
 import pandas as pd
 import geopandas as gpd
 import requests
@@ -7,29 +8,18 @@ import branca.colormap as cm
 from folium import Element
 from folium.plugins import TimestampedGeoJson
 from sklearn.preprocessing import MinMaxScaler
-from censusdis.data import download
-from censusdis.datasets import ACS5
-from censusdis import states
-import censusdis.data as ced
-import censusdis.maps as dem
 from urllib3.exceptions import InsecureRequestWarning
 import urllib3
-import numpy as np
 from functions import *
 import constants
 import sys
 import os
 
 
-# --- Disable SSL warnings globally ---
-urllib3.disable_warnings(category=InsecureRequestWarning)
-orig_get = requests.get
-def unsafe_get(*args, **kwargs):
-    kwargs['verify'] = False
-    return orig_get(*args, **kwargs)
-requests.get = unsafe_get
 
 # --- Load External Data ---
+# --- Load USDA Data ---
+
 usda = pd.read_csv("data/FoodAccessResearchAtlas.csv", dtype={"CensusTract": str})
 
 # --- Load NC shapefiles ---
@@ -131,6 +121,7 @@ for vintage in constants.years:
     data["high_econ_dev_need"] = data["econ_dev_need_score"] >= 5
     dfs.append(data)
 
+# --- Handle a graceful exit if there's no data ---
 
 if not dfs:
     print("❌ No ACS data was downloaded for any year. Exiting gracefully.")
@@ -175,79 +166,6 @@ long_data_geo["displacement_risk"] = (
 long_data_geo["displacement_risk"] = MinMaxScaler().fit_transform(
     long_data_geo[["displacement_risk"]]
 )
-
-# Select Oxford block groups for IZ analysis, 2023 Only
-oxford_bgs = long_data_geo[long_data_geo["year"] == 2023].copy()
-
-# Simulate infill + IZ effect
-scenario_infill = simulate_iz_effect(
-    df=oxford_bgs,
-    new_units=400 * len(oxford_bgs),  # 200 units per block group
-    iz_rate=0.15,                     # 10% of new units are IZ
-    timeline=10,
-    share_from_renters=0.3,           # 30% of IZ units come from current renters
-    pass_through=0.5                   # fraction of rent decrease that passes through
-)
-
-# Use IZ-adjusted rent burden instead of baseline
-scenario_infill["percent_cost_burdened_for_risk"] = scenario_infill["percent_cost_burdened_iz"]
-
-risk_fields_with_iz = constants.iz_risk_fields + ["percent_cost_burdened_for_risk"]
-
-normalized_iz = pd.DataFrame(
-    scaler.fit_transform(scenario_infill[risk_fields_with_iz].fillna(0)),
-    columns=risk_fields_with_iz,
-    index=scenario_infill.index,
-)
-
-scenario_infill["base_displacement_index_iz"] = (
-    sum(normalized_iz[field] * constants.weights.get(field, 1) for field in risk_fields_with_iz) / constants.total_weight
-)
-
-# Add the same binary penalties (demographic/rent change)
-scenario_infill["displacement_risk_iz"] = (
-    scenario_infill["base_displacement_index_iz"]
-    + scenario_infill["black_decline"] * 0.5
-    + scenario_infill["latino_decline"] * 0.5
-    + scenario_infill["rapid_rent_increase"] * 0.5
-)
-
-scenario_infill["displacement_risk_iz"] = MinMaxScaler().fit_transform(
-    scenario_infill[["displacement_risk_iz"]]
-)
-
-scenario_infill["delta_displacement_risk"] = (
-    scenario_infill["displacement_risk_iz"] - scenario_infill["displacement_risk"]
-)
-
-summary = scenario_infill[[
-    "GEOID",
-    "percent_cost_burdened",
-    "percent_cost_burdened_iz",
-    "renters_exiting",
-    "displacement_risk",
-    "displacement_risk_iz",
-    "delta_displacement_risk"
-]].copy()
-
-# Add delta columns
-summary["delta_rent_burden"] = summary["percent_cost_burdened_iz"] - summary["percent_cost_burdened"]
-
-# Format as percentages
-summary["delta_rent_burden_numeric"] = summary["percent_cost_burdened_iz"] - summary["percent_cost_burdened"]
-summary["percent_cost_burdened"] = summary["percent_cost_burdened"].map("{:.1%}".format)
-summary["percent_cost_burdened_iz"] = summary["percent_cost_burdened_iz"].map("{:.1%}".format)
-summary["delta_rent_burden"] = summary["delta_rent_burden_numeric"].map("{:+.1%}".format)
-
-avg_delta = scenario_infill["percent_cost_burdened_iz"].mean() - scenario_infill["percent_cost_burdened"].mean()
-print(f"Average reduction in rent burden: {avg_delta:.2%}")
-
-total_renters_exiting = scenario_infill["renters_exiting"].sum()
-print(f"Total renters able to move into new IZ units: {int(total_renters_exiting)}")
-
-# Use numeric column for sorting
-top_blocks = summary.sort_values("delta_rent_burden_numeric", ascending=True).head(5)
-print(top_blocks[["GEOID", "delta_rent_burden", "percent_cost_burdened", "percent_cost_burdened_iz"]])
 
 # --- Generate TimeSlider maps ---
 for indicator in constants.indicators:
@@ -302,13 +220,15 @@ for indicator in constants.indicators:
             f"{pct_total * 100:.1f}%" if pd.notnull(pct_total) else "N/A"
         )
 
+# --- Generate Popup HTML formatting ---
+
         popup_html = f"""
         <div style='max-width: 250px; font-size: 13px'>
         <strong>Year:</strong> {row['year']}<br>
         <strong>GEOID:</strong> {row['GEOID']}<br>
         <strong>{indicator.replace('_', ' ').title()}:</strong> {popup_val}<br>
         <strong>Year-over-Year Change:</strong> {yoy_str}<br>
-        <strong>% Change from 2017:</strong> {pct_total_str}<br>
+        <strong>% Change from 2021:</strong> {pct_total_str}<br>
         <strong>Median Income:</strong> ${row['median_income']:,.0f}<br>
         <strong>Median Rent:</strong> ${row['median_rent']:,.0f}<br>
         <strong>Renter Share:</strong> {row['rent_share']*100:.1f}%<br>
@@ -331,8 +251,10 @@ for indicator in constants.indicators:
             }
         })
 
-    # Build and save map
+    # --- Build and save each map ---
+
     m = folium.Map(location=[36.3, -78.6], zoom_start=14, tiles="OpenStreetMap")
+
     TimestampedGeoJson({
         "type": "FeatureCollection",
         "features": features,
@@ -348,164 +270,12 @@ for indicator in constants.indicators:
     </style>
     """))
 
-    output_path = f"html/{indicator}_timeslider.html"
+    output_path = f"html/demo/{indicator}_timeslider.html"
     m.save(output_path)
     print(f"✅ Saved: {output_path}")
 
 latest_displacement = long_data_geo[long_data_geo["year"] == 2023][["GEOID", "displacement_risk"]].copy()
 latest_displacement["displacement_risk_pct"] = (latest_displacement["displacement_risk"] * 100).map("{:.1f}%".format)
 # Save to CSV
-latest_displacement.to_csv("data/displacement_risk_2023.csv", index=False)
-print("✅ Saved 2023 displacement risk scores to data/displacement_risk_2023.csv")
 
-# --- Turn summary into a GeoDataFrame ---
-summary_gdf = scenario_infill.merge(
-    summary,
-    on="GEOID",
-    how="left",
-    suffixes=("", "_summary")
-)
-summary_gdf = gpd.GeoDataFrame(summary_gdf, geometry="geometry", crs="EPSG:4326")
-
-# --- Set up color map based on delta_rent_burden_numeric ---
-vmin, vmax = summary_gdf["delta_rent_burden_numeric"].min(), summary_gdf["delta_rent_burden_numeric"].max()
-colormap = cm.linear.RdYlGn_11.scale(vmin, vmax)
-colormap.caption = "Change in Rent Burden (After IZ Simulation)"
-
-# --- Build Folium Map ---
-m = folium.Map(location=[36.3, -78.6], zoom_start=14, tiles="OpenStreetMap")
-
-folium.TileLayer(
-    tiles='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    attr='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    name='OSM'
-).add_to(m)
-
-# IZ-adjusted polygons
-for _, row in summary_gdf.iterrows():
-    col = colormap(row["delta_rent_burden_numeric"])
-    popup_html = f"""
-    <div style='font-size:13px; max-width:220px;'>
-        <strong>GEOID:</strong> {row['GEOID']}<br>
-        <strong>Original Rent Burden:</strong> {row['percent_cost_burdened']*100:.1f}%<br>
-        <strong>IZ Adjusted Rent Burden:</strong> {row['percent_cost_burdened_iz']*100:.1f}%<br>
-        <strong>Delta Rent Burden:</strong> {row['delta_rent_burden_numeric']*100:+.1f}%<br>
-        <strong>Renters Exiting:</strong> {int(row['renters_exiting'])}<br><br>
-        <strong>Original Displacement Risk:</strong> {row['displacement_risk']*100:.1f}%<br>
-        <strong>IZ Displacement Risk:</strong> {row['displacement_risk_iz']*100:.1f}%<br>
-        <strong>Delta Displacement Risk:</strong> {row['delta_displacement_risk']*100:+.1f}%
-    </div>
-    """
-    folium.GeoJson(
-        row["geometry"],
-        style_function=lambda feature, col=col: {
-            "fillColor": col,
-            "color": "black",
-            "weight": 0.7,
-            "fillOpacity": 0.2,
-        },
-        tooltip=popup_html
-    ).add_to(m)
-
-
-colormap.add_to(m)
-m.save("html/iz_displacement_rent_map.html")
-print("✅ IZ + Displacement Risk map saved!")
-
-# base_df should be the 2023 county-level geo-dataframe with columns like percent_cost_burdened, displacement_risk, etc.
-base_df = long_data_geo[long_data_geo["year"] == 2023].copy()
-
-# Optionally restrict to Oxford block groups only if you have a list
-oxford_geoids = base_df["GEOID"].unique().tolist()  # or a subset if you know which are Oxford
-
-results_df = compute_required_units_for_all_bgs(
-    base_df,
-    bg_list=oxford_geoids,
-    target_risk=0.4,            # set acceptable threshold
-    iz_rate=0.15,               # 10% IZ
-    share_from_renters=0.30,    # 30% of IZ units from existing renters
-    pass_through=0.5,
-    max_units=20000           # cap search at e.g. 2000 units
-)
-
-# Merge the results back onto the GeoDataFrame
-map_gdf = base_df.merge(results_df, on="GEOID", how="left")
-for col in map_gdf.select_dtypes(include=["datetime", "datetimetz"]).columns:
-    map_gdf[col] = map_gdf[col].astype(str)
-
-# --- Map 1: Units Needed to reach target risk ---
-vmin, vmax = 0, map_gdf["units_needed"].dropna().max()
-colormap = cm.linear.YlGnBu_09.scale(vmin, vmax)
-colormap.caption = "Units Needed (to reach target risk)"
-
-m = folium.Map(location=[36.31, -78.59], zoom_start=13, tiles="OpenStreetMap")
-
-def style_fn(feature):
-    value = feature["properties"]["units_needed"]
-    if value is None:
-        return {"fillColor": "lightgray", "color": "black", "weight": 0.5, "fillOpacity": 0.3}
-    return {
-        "fillColor": colormap(value),
-        "color": "black",
-        "weight": 0.5,
-        "fillOpacity": 0.7,
-    }
-
-folium.GeoJson(
-    map_gdf.to_json(),
-    style_function=style_fn,
-    tooltip=folium.features.GeoJsonTooltip(
-        fields=["GEOID", "units_needed", "displacement_risk_final", "message"],
-        aliases=["BG", "Units Needed", "Final Risk", "Status"],
-        localize=True
-    )
-).add_to(m)
-
-colormap.add_to(m)
-m.save("html/oxford_units_needed_map.html")
-
-
-import numpy as np
-import pandas as pd
-import geopandas as gpd
-from sklearn.preprocessing import MinMaxScaler
-
-base_bg_gdf = base_df.copy()
-
-
-ts_df = simulate_equilibrium_projection(
-    base_df,
-    years=10,
-    annual_infill_units_per_bg=100,
-    annual_external_units=200,
-    iz_rate=0.15,
-    share_renter_to_owner_iz=0.3,
- 
-    verbose=True
-)
-
-print(ts_df.groupby("year")["displacement_risk"].mean())
-
-import matplotlib.pyplot as plt
-
-# Identify high-risk BGs at baseline
-high_risk_geoids = base_df.loc[
-    base_df["displacement_risk"] > 0.40, "GEOID"
-]
-
-# Filter time series to those BGs
-high_risk_ts = ts_df[ts_df["GEOID"].isin(high_risk_geoids)]
-
-# Pivot to wide format for line plotting
-pivot = high_risk_ts.pivot(index="year", columns="GEOID",
-                           values="displacement_risk")
-
-plt.figure(figsize=(10,6))
-for col in pivot.columns:
-    plt.plot(pivot.index, pivot[col], alpha=0.5)
-plt.title("Displacement Risk Trajectories for High-Risk BGs")
-plt.xlabel("Year")
-plt.ylabel("Displacement Risk Index")
-plt.grid(True)
-# plt.show()
 
